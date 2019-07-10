@@ -6,36 +6,30 @@
 package SchedulingApp.Model;
 
 import java.util.Calendar;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 
 /**
  *
  * @author Raymond
  */
 public class City {
-    public static ObservableList<Country> countryId = FXCollections.observableArrayList();
     private int cityId;
     private String city;
+    private int countryId;
     private Calendar createDate;
     private String createdBy;
     private Calendar lastUpdate;
     private String lastUpdateBy;
 
-    
     public City(int cityId, String city, int countryId, Calendar createDate, String createdBy, Calendar lastUpdate, String lastUpdateBy) {
         this.cityId = cityId;
         this.city = city;
+        this.countryId = countryId;
         this.createDate = createDate;
         this.createdBy = createdBy;
         this.lastUpdate = lastUpdate;
         this.lastUpdateBy = lastUpdateBy;
     }
 
-    public static Country lookupCountryId(int countryId) {
-        return countryId.get(countryId);
-    }
-    
     public int getCityId() {
         return cityId;
     }
@@ -50,6 +44,14 @@ public class City {
 
     public void setCity(String city) {
         this.city = city;
+    }
+
+    public int getCountryId() {
+        return countryId;
+    }
+
+    public void setCountryId(int countryId) {
+        this.countryId = countryId;
     }
 
     public Calendar getCreateDate() {
@@ -83,6 +85,4 @@ public class City {
     public void setLastUpdateBy(String lastUpdateBy) {
         this.lastUpdateBy = lastUpdateBy;
     }
-    
-    
 }
