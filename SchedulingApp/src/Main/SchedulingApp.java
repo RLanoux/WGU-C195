@@ -14,6 +14,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import SchedulingApp.View_Controller.LoginScreenController;
 import java.sql.SQLException;
+import javafx.stage.StageStyle;
 
 /**
  *
@@ -28,7 +29,10 @@ public class SchedulingApp extends Application {
         Parent root = loader.load();
         Scene scene = new Scene(root);
         
+        stage.setTitle("Scheduling App - Login");
         stage.setScene(scene);
+        stage.setResizable(false);
+        stage.initStyle(StageStyle.UTILITY);
         stage.show();
     }
     
