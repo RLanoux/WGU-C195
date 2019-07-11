@@ -43,13 +43,13 @@ public class LoginScreenController implements Initializable {
     private Button btnExit;
 
     @FXML
-    void handleExitAction(ActionEvent event) {
+    void getExitAction(ActionEvent event) {
         Stage stage = (Stage) btnExit.getScene().getWindow();
         stage.close();
     }
 
     @FXML
-    void handleLoginAction(ActionEvent event) {
+    void getLoginAction(ActionEvent event) {
         
     }
     

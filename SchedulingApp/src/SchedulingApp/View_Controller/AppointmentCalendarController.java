@@ -116,42 +116,42 @@ public class AppointmentCalendarController implements Initializable {
     private TableColumn<?, ?> tcMonthlyApptEnd;
 
     @FXML
+    void getWeeklyAppts(ActionEvent event) {
+
+    }
+    
+    @FXML
+    void getMonthlyAppts(ActionEvent event) {
+
+    }
+    
+    @FXML
+    void getNewAppt(ActionEvent event) {
+
+    }
+    
+    @FXML
+    void getModifyAppt(ActionEvent event) {
+
+    }
+    
+    @FXML
     void getDeleteAppt(ActionEvent event) {
 
     }
 
     @FXML
-    void getDeleteCust(ActionEvent event) {
+    void getNewCust(ActionEvent event) {
 
     }
-
-    @FXML
-    void getExit(ActionEvent event) {
-
-    }
-
-    @FXML
-    void getModifyAppt(ActionEvent event) {
-
-    }
-
+    
     @FXML
     void getModifyCust(ActionEvent event) {
 
     }
-
+    
     @FXML
-    void getMonthlyAppts(ActionEvent event) {
-
-    }
-
-    @FXML
-    void getNewAppt(ActionEvent event) {
-
-    }
-
-    @FXML
-    void getNewCust(ActionEvent event) {
+    void getDeleteCust(ActionEvent event) {
 
     }
 
@@ -164,9 +164,9 @@ public class AppointmentCalendarController implements Initializable {
     void getUserLogs(ActionEvent event) {
 
     }
-
+    
     @FXML
-    void getWeeklyAppts(ActionEvent event) {
+    void getExitAction(ActionEvent event) {
 
     }
     
