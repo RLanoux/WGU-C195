@@ -5,6 +5,7 @@
  */
 package SchedulingApp.View_Controller;
 
+import SchedulingApp.Model.User;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -50,7 +51,15 @@ public class LoginScreenController implements Initializable {
 
     @FXML
     void getLoginAction(ActionEvent event) {
+        String username = txtUsername.getText();
+        String password = txtPassword.getText();
         
+        try {
+            User userLogin = new User();
+            userLogin.setUserName(username);
+            userLogin.setPassword(password);
+        }
+        catch () {}
     }
     
     @Override

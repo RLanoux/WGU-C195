@@ -21,15 +21,7 @@ public class User {
     private Calendar lastUpdate;
     private String lastUpdateBy;
     
-    public User(int userId, String userName, String password, boolean active, Calendar createDate, String createdBy, Calendar lastUpdate, String lastUpdateBy) {
-        this.userId = userId;
-        this.userName = userName;
-        this.password = password;
-        this.active = active;
-        this.createDate = createDate;
-        this.createdBy = createdBy;
-        this.lastUpdate = lastUpdate;
-        this.lastUpdateBy = lastUpdateBy;
+    public User() {
     }
 
     public int getUserId() {
