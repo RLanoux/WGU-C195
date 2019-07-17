@@ -24,7 +24,7 @@ public class DBUser {
     public DBUser () {
     }
     
-    public ObservableList<User> getActiveUsers() {
+    public static ObservableList<User> getActiveUsers() {
         ObservableList<User> activeUsers = FXCollections.observableArrayList();
         String getActiveUsers = "SELECT * FROM user WHERE active = 1";
         
