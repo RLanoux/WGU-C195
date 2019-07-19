@@ -56,29 +56,33 @@ public class LoginScreenController implements Initializable {
     }
 
     @FXML
-    void getLoginAction(ActionEvent event) throws IOException {
+    void getLoginAction(ActionEvent event) throws IOException, Exception {
+        Integer userId;
         String username = txtUsername.getText();
         String password = txtPassword.getText();
+        Boolean active;
         
         User userLogin = new User();
         userLogin.setUserName(username);
         userLogin.setPassword(password);
         
         FXMLLoader ApptCalLoader = new FXMLLoader(AppointmentCalendarController.class.getResource("AppointmentCalendar.fxml"));
-        Parent ApptCal = ApptCalLoader.load();
-        Scene ApptCalScene = new Scene(ApptCal);
+        Parent ApptCalRoot = ApptCalLoader.load();
+        Scene ApptCalScene = new Scene(ApptCalRoot);
         Stage ApptCalStage = new Stage();
         ApptCalStage.setScene(ApptCalScene);
         
         try {
-            ObservableList<User> allMyUsers = DBUser.getActiveUsers();
+            ObservableList<User> userLoginInfo = DBUser.getUserLoginInfo(username, password);
             boolean found = false;
-            for (User u: allMyUsers) {
+            for (User u: userLoginInfo) {
                 if (userLogin.getUserName().equals(u.getUserName())) {
                     if (userLogin.getPassword().equals(u.getPassword()))
                     found = true;
                         ApptCalStage.setTitle("Appointment Calendar");
                         ApptCalStage.show();
+                        Stage stage = (Stage) btnLogin.getScene().getWindow();
+                        stage.close();
                 } 
             }
             if (!found) {

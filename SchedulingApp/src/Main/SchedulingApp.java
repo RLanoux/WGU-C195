@@ -23,7 +23,7 @@ import javafx.stage.StageStyle;
 public class SchedulingApp extends Application {
     
     @Override
-    public void start(Stage stage) throws IOException {
+    public void start(Stage stage) throws ClassNotFoundException, SQLException, IOException, Exception {
         FXMLLoader loader = new FXMLLoader(LoginScreenController.class.getResource("LoginScreen.fxml"));
         
         Parent root = loader.load();
