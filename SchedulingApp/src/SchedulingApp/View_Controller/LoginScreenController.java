@@ -65,8 +65,8 @@ public class LoginScreenController implements Initializable {
         userLogin.setPassword(password);
         
         FXMLLoader ApptCalLoader = new FXMLLoader(AppointmentCalendarController.class.getResource("AppointmentCalendar.fxml"));
-        Parent Appt = ApptCalLoader.load();
-        Scene ApptCalScene = new Scene(Appt);
+        Parent ApptCal = ApptCalLoader.load();
+        Scene ApptCalScene = new Scene(ApptCal);
         Stage ApptCalStage = new Stage();
         ApptCalStage.setScene(ApptCalScene);
         
