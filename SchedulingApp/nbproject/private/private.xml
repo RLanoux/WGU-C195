@@ -3,12 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/WGU-C195/SchedulingApp/src/SchedulingApp/View_Controller/LoginScreen.fxml</file>
-            <file>file:/C:/WGU-C195/SchedulingApp/src/SchedulingApp/DAO/DBUser.java</file>
+            <file>file:/C:/WGU-C195/SchedulingApp/src/SchedulingApp/DAO/DBCustomer.java</file>
             <file>file:/C:/WGU-C195/SchedulingApp/src/Main/SchedulingApp.java</file>
-            <file>file:/C:/WGU-C195/SchedulingApp/src/SchedulingApp/View_Controller/LoginScreenController.java</file>
-            <file>file:/C:/WGU-C195/SchedulingApp/src/SchedulingApp/View_Controller/AppointmentCalendar.fxml</file>
-            <file>file:/C:/WGU-C195/SchedulingApp/src/SchedulingApp/DAO/DBConnector.java</file>
+            <file>file:/C:/WGU-C195/SchedulingApp/src/SchedulingApp/DAO/DBAppointment.java</file>
+            <file>file:/C:/WGU-C195/SchedulingApp/src/SchedulingApp/Model/Customer.java</file>
         </group>
     </open-files>
 </project-private>
