@@ -21,10 +21,10 @@ public class DBUser {
     
     private final static Connection DB_CONN = DBConnector.DB_CONN;
     
-    /*public DBUser () {
-    }*/
+    public DBUser () {
+    }
     
-    /*public static ObservableList<User> getActiveUsers() {
+    public static ObservableList<User> getActiveUsers() {
         ObservableList<User> activeUsers = FXCollections.observableArrayList();
         String getActiveUsers = "SELECT * FROM user WHERE active = 1";
         
@@ -45,38 +45,6 @@ public class DBUser {
         catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-        
         return activeUsers;
-    }*/
-    
-    public static ObservableList<User> getUserLoginInfo(String username, String password) {
-        ObservableList<User> userLoginInfo = FXCollections.observableArrayList();
-        String getUserLogin = "SELECT * FROM user WHERE userName = ? AND password = ?";
-        
-        
-        try {
-            PreparedStatement stmt = DB_CONN.prepareStatement(getUserLogin);
-            stmt.setString(1, username);
-            stmt.setString(2, password);
-            ResultSet rs = stmt.executeQuery();
-            
-            if (rs.next()) {
-                User getUser = new User();
-                getUser.setUserId(rs.getInt("userId"));
-                getUser.setUserName(rs.getString("userName"));
-                getUser.setPassword(rs.getString("password"));
-                getUser.setActive(rs.getBoolean("active"));
-                
-                userLoginInfo.add(getUser);
-            }
-            else {
-                return null;
-            }
-        }
-        catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        
-        return userLoginInfo;
     }
 }

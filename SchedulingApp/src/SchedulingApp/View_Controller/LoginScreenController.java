@@ -7,8 +7,10 @@ package SchedulingApp.View_Controller;
 
 import SchedulingApp.DAO.DBUser;
 import SchedulingApp.Model.User;
+import java.awt.Color;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Locale;
 import java.util.ResourceBundle;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -20,6 +22,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 
 /**
@@ -27,6 +30,8 @@ import javafx.stage.Stage;
  * @author Raymond
  */
 public class LoginScreenController implements Initializable {
+    ResourceBundle rb;
+    Locale userLocale;
     
     @FXML
     private Label lblAlert;
@@ -66,27 +71,20 @@ public class LoginScreenController implements Initializable {
         userLogin.setUserName(username);
         userLogin.setPassword(password);
         
-        FXMLLoader ApptCalLoader = new FXMLLoader(AppointmentCalendarController.class.getResource("AppointmentCalendar.fxml"));
-        Parent ApptCalRoot = ApptCalLoader.load();
-        Scene ApptCalScene = new Scene(ApptCalRoot);
-        Stage ApptCalStage = new Stage();
-        ApptCalStage.setScene(ApptCalScene);
-        
         try {
-            ObservableList<User> userLoginInfo = DBUser.getUserLoginInfo(username, password);
+            ObservableList<User> userLoginInfo = DBUser.getActiveUsers();
             boolean found = false;
             for (User u: userLoginInfo) {
-                if (userLogin.getUserName().equals(u.getUserName())) {
-                    if (userLogin.getPassword().equals(u.getPassword()))
+                if (userLogin.getUserName().equals(u.getUserName()) && userLogin.getPassword().equals(u.getPassword())) {
                     found = true;
-                        ApptCalStage.setTitle("Appointment Calendar");
-                        ApptCalStage.show();
+                        openApptCal();
                         Stage stage = (Stage) btnLogin.getScene().getWindow();
                         stage.close();
                 } 
             }
             if (!found) {
-                System.out.print("Wrong");
+                this.lblAlert.setText(this.rb.getString("lblErrorAlert") + ".");
+                this.lblAlert.setTextFill(Paint.valueOf("RED"));
             }
         }
         catch (Exception e) {
@@ -96,7 +94,28 @@ public class LoginScreenController implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        this.userLocale = Locale.getDefault();
+        this.rb = ResourceBundle.getBundle("LocaleLanguageFiles/rb", this.userLocale);
+        this.lblUsername.setText(this.rb.getString("username") + ":");
+        this.lblPassword.setText(this.rb.getString("password") + ":");
+        this.txtUsername.setPromptText(this.rb.getString("usernamePrompt"));
+        this.txtPassword.setPromptText(this.rb.getString("passwordPrompt"));
+        this.btnLogin.setText(this.rb.getString("btnLoginText"));
+        this.btnExit.setText(this.rb.getString("btnExitText"));
     }    
     
+    public void openApptCal() throws IOException {
+        try {
+            FXMLLoader ApptCalLoader = new FXMLLoader(AppointmentCalendarController.class.getResource("AppointmentCalendar.fxml"));
+            Parent ApptCalRoot = ApptCalLoader.load();
+            AppointmentCalendarController ApptCalController = ApptCalLoader.getController();
+            Scene ApptCalScene = new Scene(ApptCalRoot);
+            Stage ApptCalStage = new Stage();
+            ApptCalStage.setScene(ApptCalScene);
+            ApptCalStage.setTitle("Appointment Calendar");
+            ApptCalStage.show();
+        }
+        catch (IOException e) {
+        }
+    }
 }
