@@ -5,6 +5,8 @@
  */
 package SchedulingApp.Model;
 
+import java.sql.Timestamp;
+import java.time.ZonedDateTime;
 import java.util.Calendar;
 
 /**
@@ -21,30 +23,14 @@ public class Appointment {
     private String contact;
     private String type;
     private String url;
-    private Calendar start;
-    private Calendar end;
-    private Calendar createDate;
+    private ZonedDateTime start;
+    private ZonedDateTime end;
+    private ZonedDateTime createDate;
     private String createdBy;
-    private Calendar lastUpdate;
+    private ZonedDateTime lastUpdate;
     private String lastUpdateBy;
     
-    public Appointment(int appointmentId, int customerId, int userId, String title, String description, String location, String contact, String type, String url,
-                            Calendar start, Calendar end, Calendar createDate, String createdBy, Calendar lastUpdate, String lastUpdateBy) {
-        this.appointmentId = appointmentId;
-        this.customerId = customerId;
-        this.userId = userId;
-        this.title = title;
-        this.description =  description;
-        this.location = location;
-        this.contact = contact;
-        this.type = type;
-        this.url = url;
-        this.start = start;
-        this.end = end;
-        this.createDate = createDate;
-        this.createdBy = createdBy;
-        this.lastUpdate = lastUpdate;
-        this.lastUpdateBy = lastUpdateBy;
+    public Appointment() {
     }
 
     public int getAppointmentId() {
@@ -119,19 +105,19 @@ public class Appointment {
         this.url = url;
     }
 
-    public Calendar getStart() {
+    public Timestamp getStart() {
         return start;
     }
 
-    public void setStart(Calendar start) {
+    public void setStart(Timestamp start) {
         this.start = start;
     }
 
-    public Calendar getEnd() {
+    public Timestamp getEnd() {
         return end;
     }
 
-    public void setEnd(Calendar end) {
+    public void setEnd(Timestamp end) {
         this.end = end;
     }
 
