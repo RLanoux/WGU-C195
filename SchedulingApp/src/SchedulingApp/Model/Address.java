@@ -5,7 +5,8 @@
  */
 package SchedulingApp.Model;
 
-import java.util.Calendar;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 /**
  *
@@ -18,23 +19,12 @@ public class Address {
     private int cityId;
     private String postalCode;
     private String phone;
-    private Calendar createDate;
+    private LocalDateTime createDate;
     private String createdBy;
-    private Calendar lastUpdate;
+    private Timestamp lastUpdate;
     private String lastUpdateBy;
     
-    public Address (int addressId, String address, String address2, int cityId, String postalCode, String phone, 
-                        Calendar createDate, String createdBy, Calendar lastUpdate, String lastUpdateBy) {
-        this.addressId = addressId;
-        this.address = address;
-        this.address2 = address2;
-        this.cityId = cityId;
-        this.postalCode = postalCode;
-        this.phone = phone;
-        this.createDate = createDate;
-        this.createdBy = createdBy;
-        this.lastUpdate = lastUpdate;
-        this.lastUpdateBy = lastUpdateBy;
+    public Address () {
     }
 
     public int getAddressId() {
@@ -85,11 +75,11 @@ public class Address {
         this.phone = phone;
     }
 
-    public Calendar getCreateDate() {
+    public LocalDateTime getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(Calendar createDate) {
+    public void setCreateDate(LocalDateTime createDate) {
         this.createDate = createDate;
     }
 
@@ -101,11 +91,11 @@ public class Address {
         this.createdBy = createdBy;
     }
 
-    public Calendar getLastUpdate() {
+    public Timestamp getLastUpdate() {
         return lastUpdate;
     }
 
-    public void setLastUpdate(Calendar lastUpdate) {
+    public void setLastUpdate(Timestamp lastUpdate) {
         this.lastUpdate = lastUpdate;
     }
 

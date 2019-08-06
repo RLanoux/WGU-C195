@@ -33,13 +33,15 @@ public class DBAppointment {
                 apptByWeek.setContact(rs.getString("contact"));
                 apptByWeek.setType(rs.getString("type"));
                 apptByWeek.setUrl(rs.getString("url"));
-                apptByWeek.setStart(rs.getTimestamp("start"));
-                apptByWeek.setEnd(rs.getTimestamp("end"));
+                apptByWeek.setStart(rs.getTimestamp("start").toLocalDateTime());
+                apptByWeek.setEnd(rs.getTimestamp("end").toLocalDateTime());
+                apptsByWeek.add(apptByWeek);
             }
         }
         catch (SQLException e) {
             e.getMessage();
         }
+        return apptsByWeek;
     }
     
 }

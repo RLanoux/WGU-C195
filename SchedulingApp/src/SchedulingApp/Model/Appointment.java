@@ -6,8 +6,7 @@
 package SchedulingApp.Model;
 
 import java.sql.Timestamp;
-import java.time.ZonedDateTime;
-import java.util.Calendar;
+import java.time.LocalDateTime;
 
 /**
  *
@@ -23,11 +22,11 @@ public class Appointment {
     private String contact;
     private String type;
     private String url;
-    private ZonedDateTime start;
-    private ZonedDateTime end;
-    private ZonedDateTime createDate;
+    private LocalDateTime start;
+    private LocalDateTime end;
+    private LocalDateTime createDate;
     private String createdBy;
-    private ZonedDateTime lastUpdate;
+    private Timestamp lastUpdate;
     private String lastUpdateBy;
     
     public Appointment() {
@@ -105,27 +104,27 @@ public class Appointment {
         this.url = url;
     }
 
-    public Timestamp getStart() {
+    public LocalDateTime getStart() {
         return start;
     }
 
-    public void setStart(Timestamp start) {
+    public void setStart(LocalDateTime start) {
         this.start = start;
     }
 
-    public Timestamp getEnd() {
+    public LocalDateTime getEnd() {
         return end;
     }
 
-    public void setEnd(Timestamp end) {
+    public void setEnd(LocalDateTime end) {
         this.end = end;
     }
 
-    public Calendar getCreateDate() {
+    public LocalDateTime getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(Calendar createDate) {
+    public void setCreateDate(LocalDateTime createDate) {
         this.createDate = createDate;
     }
 
@@ -137,11 +136,11 @@ public class Appointment {
         this.createdBy = createdBy;
     }
 
-    public Calendar getLastUpdate() {
+    public Timestamp getLastUpdate() {
         return lastUpdate;
     }
 
-    public void setLastUpdate(Calendar lastUpdate) {
+    public void setLastUpdate(Timestamp lastUpdate) {
         this.lastUpdate = lastUpdate;
     }
 

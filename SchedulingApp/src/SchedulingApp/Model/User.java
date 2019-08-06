@@ -5,7 +5,8 @@
  */
 package SchedulingApp.Model;
 
-import java.util.Calendar;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 /**
  *
@@ -16,9 +17,9 @@ public class User {
     private String userName;
     private String password;
     private boolean active;
-    private Calendar createDate;
+    private LocalDateTime createDate;
     private String createdBy;
-    private Calendar lastUpdate;
+    private Timestamp lastUpdate;
     private String lastUpdateBy;
     
     public User() {
@@ -56,11 +57,11 @@ public class User {
         this.active = active;
     }
 
-    public Calendar getCreateDate() {
+    public LocalDateTime getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(Calendar createDate) {
+    public void setCreateDate(LocalDateTime createDate) {
         this.createDate = createDate;
     }
 
@@ -72,11 +73,11 @@ public class User {
         this.createdBy = createdBy;
     }
 
-    public Calendar getLastUpdate() {
+    public Timestamp getLastUpdate() {
         return lastUpdate;
     }
 
-    public void setLastUpdate(Calendar lastUpdate) {
+    public void setLastUpdate(Timestamp lastUpdate) {
         this.lastUpdate = lastUpdate;
     }
 
