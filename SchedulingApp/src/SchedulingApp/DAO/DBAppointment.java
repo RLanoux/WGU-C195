@@ -149,7 +149,7 @@ public class DBAppointment {
     public void updateAppointment(Appointment appointment) {
         String updateApptSQL = String.join(" ",
                 "UPDATE appointment",
-                "SET customerId=?, userId=?, title=?, description=?, location=?" +
+                "SET customerId=?, userId=?, title=?, description=?, location=?," +
                 "contact=?, type=?, url=?, start=?, end=?, lastUpdate=NOW(), lastUpdateBy=?",
                 "WHERE appointmentId=?");
         
@@ -157,6 +157,27 @@ public class DBAppointment {
             PreparedStatement stmt = DB_CONN.prepareStatement(updateApptSQL);
             stmt.setInt(1, appointment.getCustomerId());
             stmt.setInt(2, appointment.getUserId());
+            stmt.setString(3, appointment.getTitle());
+            stmt.setString(4, appointment.getDescription());
+            stmt.setString(5, appointment.getLocation());
+            stmt.setString(6, appointment.getContact());
+            stmt.setString(7, appointment.getType());
+            stmt.setString(8, appointment.getUrl());
+            stmt.setObject(9, appointment.getStart());
+            stmt.setObject(10, appointment.getEnd());
+            stmt.setString(11, loggedUser.getUserName());
+            stmt.setInt(12, appointment.getAppointmentId());
+            stmt.executeUpdate();
+        }
+        catch (SQLException e) {
+        }
+    }
+    public void deleteAppointment(Appointment appointment) {
+        String deleteAppointmentSQL = "DELETE FROM appointment WHERE appointmentId = ?";
+        
+        try {
+            PreparedStatement stmt = DB_CONN.prepareStatement(deleteAppointmentSQL);
+            stmt.setInt(1, appointment.getAppointmentId());
         }
         catch (SQLException e) {
         }

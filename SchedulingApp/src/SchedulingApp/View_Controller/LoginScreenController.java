@@ -7,7 +7,6 @@ package SchedulingApp.View_Controller;
 
 import SchedulingApp.DAO.DBUser;
 import SchedulingApp.Model.User;
-import java.awt.Color;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Locale;
@@ -17,6 +16,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -61,7 +61,7 @@ public class LoginScreenController implements Initializable {
     }
 
     @FXML
-    void getLoginAction(ActionEvent event) throws IOException, Exception {
+    void getLoginAction(ActionEvent eLogin) throws IOException, Exception {
         Integer userId;
         String username = txtUsername.getText();
         String password = txtPassword.getText();
@@ -77,9 +77,18 @@ public class LoginScreenController implements Initializable {
             for (User u: userLoginInfo) {
                 if (userLogin.getUserName().equals(u.getUserName()) && userLogin.getPassword().equals(u.getPassword())) {
                     found = true;
-                        openApptCal();
-                        Stage stage = (Stage) btnLogin.getScene().getWindow();
-                        stage.close();
+                        try {
+                            Parent ApptCalScreen = FXMLLoader.load(getClass().getResource("AppointmentCalendar.fxml"));
+                            Scene ApptCalScene = new Scene(ApptCalScreen);
+                            Stage ApptCalStage = (Stage) ((Node)eLogin.getSource()).getScene().getWindow();
+                            ApptCalStage.setScene(ApptCalScene);
+                            ApptCalStage.setTitle("Appointment Calendar");
+                            ApptCalStage.show();
+                        }
+                        catch (IOException e) {
+                        }
+                        //Stage stage = (Stage) btnLogin.getScene().getWindow();
+                        //stage.close();
                 } 
             }
             if (!found) {
@@ -104,18 +113,16 @@ public class LoginScreenController implements Initializable {
         this.btnExit.setText(this.rb.getString("btnExitText"));
     }    
     
-    public void openApptCal() throws IOException {
+    /*public void openApptCal() throws IOException {
         try {
-            FXMLLoader ApptCalLoader = new FXMLLoader(AppointmentCalendarController.class.getResource("AppointmentCalendar.fxml"));
-            Parent ApptCalRoot = ApptCalLoader.load();
-            AppointmentCalendarController ApptCalController = ApptCalLoader.getController();
-            Scene ApptCalScene = new Scene(ApptCalRoot);
-            Stage ApptCalStage = new Stage();
+            Parent ApptCalScreen = FXMLLoader.load(getClass().getResource("AppointmentCalendar.fxml"));
+            Scene ApptCalScene = new Scene(ApptCalScreen);
+            Stage ApptCalStage = (Stage) ((Node)eLogin.getSource().getScene().getWindow());
             ApptCalStage.setScene(ApptCalScene);
             ApptCalStage.setTitle("Appointment Calendar");
             ApptCalStage.show();
         }
         catch (IOException e) {
         }
-    }
+    }*/
 }
