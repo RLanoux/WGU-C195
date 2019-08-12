@@ -7,6 +7,7 @@ package SchedulingApp.View_Controller;
 
 import static SchedulingApp.DAO.DBAppointment.getApptsByWeek;
 import SchedulingApp.Model.Appointment;
+import SchedulingApp.Model.Customer;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ResourceBundle;
@@ -59,7 +60,7 @@ public class AppointmentCalendarController implements Initializable {
     private TableView<Appointment> tvWeeklyAppts;
 
     @FXML
-    private TableColumn<Appointment, String> tcWeeklyCustName;
+    private TableColumn<Customer, String> tcWeeklyCustName;
 
     @FXML
     private TableColumn<Appointment, String> tcWeeklyApptTitle;
@@ -92,7 +93,7 @@ public class AppointmentCalendarController implements Initializable {
     private TableView<Appointment> tvMonthlyAppts;
 
     @FXML
-    private TableColumn<Appointment, String> tcMonthlyCustName;
+    private TableColumn<Customer, String> tcMonthlyCustName;
 
     @FXML
     private TableColumn<Appointment, String> tcMonthlyApptTitle;
@@ -178,7 +179,6 @@ public class AppointmentCalendarController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
     }    
     
 }
