@@ -5,6 +5,7 @@
  */
 package SchedulingApp.View_Controller;
 
+import Main.SchedulingApp;
 import SchedulingApp.DAO.DBUser;
 import SchedulingApp.Model.User;
 import java.io.IOException;
@@ -19,7 +20,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Paint;
@@ -55,9 +58,19 @@ public class LoginScreenController implements Initializable {
     private Button btnExit;
 
     @FXML
-    void getExitAction(ActionEvent event) {
-        Stage stage = (Stage) btnExit.getScene().getWindow();
-        stage.close();
+    void getExitAction(ActionEvent eExitButton) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Exit Scheduling App");
+        alert.setHeaderText("Are you sure you want to exit?");
+        alert.setContentText("Press OK to exit the program. \nPress Cancel to stay on this screen.");
+        alert.showAndWait();
+        if (alert.getResult() == ButtonType.OK) {
+            Stage winMainScreen = (Stage)((Node)eExitButton.getSource()).getScene().getWindow();
+            winMainScreen.close();
+        }
+        else {
+            alert.close();
+        }
     }
 
     @FXML
@@ -78,9 +91,11 @@ public class LoginScreenController implements Initializable {
                 if (userLogin.getUserName().equals(u.getUserName()) && userLogin.getPassword().equals(u.getPassword())) {
                     found = true;
                         try {
-                            Parent ApptCalScreen = FXMLLoader.load(getClass().getResource("AppointmentCalendar.fxml"));
+                            FXMLLoader loader = new FXMLLoader();
+                            loader.setLocation(SchedulingApp.class.getResource("/SchedulingApp/View_Controller/AppointmentCalendar.fxml"));
+                            Parent ApptCalScreen = loader.load();
                             Scene ApptCalScene = new Scene(ApptCalScreen);
-                            Stage ApptCalStage = (Stage) ((Node)eLogin.getSource()).getScene().getWindow();
+                            Stage ApptCalStage = new Stage();
                             ApptCalStage.setScene(ApptCalScene);
                             ApptCalStage.setTitle("Appointment Calendar");
                             ApptCalStage.show();
@@ -111,18 +126,5 @@ public class LoginScreenController implements Initializable {
         this.txtPassword.setPromptText(this.rb.getString("passwordPrompt"));
         this.btnLogin.setText(this.rb.getString("btnLoginText"));
         this.btnExit.setText(this.rb.getString("btnExitText"));
-    }    
-    
-    /*public void openApptCal() throws IOException {
-        try {
-            Parent ApptCalScreen = FXMLLoader.load(getClass().getResource("AppointmentCalendar.fxml"));
-            Scene ApptCalScene = new Scene(ApptCalScreen);
-            Stage ApptCalStage = (Stage) ((Node)eLogin.getSource().getScene().getWindow());
-            ApptCalStage.setScene(ApptCalScene);
-            ApptCalStage.setTitle("Appointment Calendar");
-            ApptCalStage.show();
-        }
-        catch (IOException e) {
-        }
-    }*/
+    }
 }

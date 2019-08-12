@@ -14,10 +14,15 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 
 /**
  * FXML Controller class
@@ -121,7 +126,7 @@ public class AppointmentCalendarController implements Initializable {
 
     @FXML
     void getWeeklyAppts(ActionEvent event) {
-        getApptsByWeek();
+        updateWeeklyApptTV();
     }
     
     @FXML
@@ -170,8 +175,24 @@ public class AppointmentCalendarController implements Initializable {
     }
     
     @FXML
-    void getExitAction(ActionEvent event) {
-
+    void getExitAction(ActionEvent eExitButton) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Exit Scheduling App");
+        alert.setHeaderText("Are you sure you want to exit?");
+        alert.setContentText("Press OK to exit the program. \nPress Cancel to stay on this screen.");
+        alert.showAndWait();
+        if (alert.getResult() == ButtonType.OK) {
+            Stage winMainScreen = (Stage)((Node)eExitButton.getSource()).getScene().getWindow();
+            winMainScreen.close();
+        }
+        else {
+            alert.close();
+        }
+    }
+    
+    @FXML
+    public void updateWeeklyApptTV() {
+        tvWeeklyAppts.setItems(getApptsByWeek());
     }
     
     /**
@@ -179,6 +200,8 @@ public class AppointmentCalendarController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        tcWeeklyCustName.setCellValueFactory(new PropertyValueFactory<>("customerName"));
+        updateWeeklyApptTV();
     }    
     
 }
