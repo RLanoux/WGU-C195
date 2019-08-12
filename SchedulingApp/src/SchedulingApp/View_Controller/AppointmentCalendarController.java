@@ -5,7 +5,10 @@
  */
 package SchedulingApp.View_Controller;
 
+import static SchedulingApp.DAO.DBAppointment.getApptsByWeek;
+import SchedulingApp.Model.Appointment;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -53,71 +56,71 @@ public class AppointmentCalendarController implements Initializable {
     private Tab tpWeeklyAppts;
 
     @FXML
-    private TableView<?> tvWeeklyAppts;
+    private TableView<Appointment> tvWeeklyAppts;
 
     @FXML
-    private TableColumn<?, ?> tcWeeklyCustName;
+    private TableColumn<Appointment, String> tcWeeklyCustName;
 
     @FXML
-    private TableColumn<?, ?> tcWeeklyApptTitle;
+    private TableColumn<Appointment, String> tcWeeklyApptTitle;
 
     @FXML
-    private TableColumn<?, ?> tcWeeklyApptDescription;
+    private TableColumn<Appointment, String> tcWeeklyApptDescription;
 
     @FXML
-    private TableColumn<?, ?> tcWeeklyApptLocation;
+    private TableColumn<Appointment, String> tcWeeklyApptLocation;
 
     @FXML
-    private TableColumn<?, ?> tcWeeklyApptContact;
+    private TableColumn<Appointment, String> tcWeeklyApptContact;
 
     @FXML
-    private TableColumn<?, ?> tcWeeklyApptType;
+    private TableColumn<Appointment, String> tcWeeklyApptType;
 
     @FXML
-    private TableColumn<?, ?> tcWeeklyApptURL;
+    private TableColumn<Appointment, String> tcWeeklyApptURL;
 
     @FXML
-    private TableColumn<?, ?> tcWeeklyApptStart;
+    private TableColumn<Appointment, LocalDateTime> tcWeeklyApptStart;
 
     @FXML
-    private TableColumn<?, ?> tcWeeklyApptEnd;
+    private TableColumn<Appointment, LocalDateTime> tcWeeklyApptEnd;
 
     @FXML
     private Tab tpMonthlyAppts;
 
     @FXML
-    private TableView<?> tvMonthlyAppts;
+    private TableView<Appointment> tvMonthlyAppts;
 
     @FXML
-    private TableColumn<?, ?> tcMonthlyCustName;
+    private TableColumn<Appointment, String> tcMonthlyCustName;
 
     @FXML
-    private TableColumn<?, ?> tcMonthlyApptTitle;
+    private TableColumn<Appointment, String> tcMonthlyApptTitle;
 
     @FXML
-    private TableColumn<?, ?> tcMonthlyApptDescription;
+    private TableColumn<Appointment, String> tcMonthlyApptDescription;
 
     @FXML
-    private TableColumn<?, ?> tcMonthlyApptLocation;
+    private TableColumn<Appointment, String> tcMonthlyApptLocation;
 
     @FXML
-    private TableColumn<?, ?> tcMonthlyApptContact;
+    private TableColumn<Appointment, String> tcMonthlyApptContact;
 
     @FXML
-    private TableColumn<?, ?> tcMonthlyApptType;
+    private TableColumn<Appointment, String> tcMonthlyApptType;
 
     @FXML
-    private TableColumn<?, ?> tcMonthlyApptURL;
+    private TableColumn<Appointment, String> tcMonthlyApptURL;
 
     @FXML
-    private TableColumn<?, ?> tcMonthlyApptStart;
+    private TableColumn<Appointment, LocalDateTime> tcMonthlyApptStart;
 
     @FXML
-    private TableColumn<?, ?> tcMonthlyApptEnd;
+    private TableColumn<Appointment, LocalDateTime> tcMonthlyApptEnd;
 
     @FXML
     void getWeeklyAppts(ActionEvent event) {
-
+        getApptsByWeek();
     }
     
     @FXML
