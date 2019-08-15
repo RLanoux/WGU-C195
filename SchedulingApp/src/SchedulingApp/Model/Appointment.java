@@ -7,100 +7,128 @@ package SchedulingApp.Model;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.StringProperty;
 
 /**
  *
  * @author P00306944
  */
 public class Appointment {
-    private int appointmentId;
-    private int customerId;
-    private int userId;
-    private String title;
-    private String description;
-    private String location;
-    private String contact;
-    private String type;
-    private String url;
+    private IntegerProperty appointmentId;
+    private IntegerProperty customerId;
+    private IntegerProperty userId;
+    private StringProperty title;
+    private StringProperty description;
+    private StringProperty location;
+    private StringProperty contact;
+    private StringProperty type;
+    private StringProperty url;
     private LocalDateTime start;
     private LocalDateTime end;
     private LocalDateTime createDate;
     private String createdBy;
     private Timestamp lastUpdate;
     private String lastUpdateBy;
+    private StringProperty custName;
     
-    public Appointment() {
+    public Appointment(
+            StringProperty custName, 
+            IntegerProperty appointmentId,
+            IntegerProperty customerId,
+            IntegerProperty userId,
+            StringProperty title,
+            StringProperty description,
+            StringProperty location,
+            StringProperty contact,
+            StringProperty type,
+            StringProperty url,
+            LocalDateTime start,
+            LocalDateTime end) 
+    {
+        this.custName = custName;
+        this.appointmentId = appointmentId;
+        this.customerId = customerId;
+        this.userId = userId;
+        this.title = title;
+        this.description = description;
+        this.location = location;
+        this.contact = contact;
+        this.type = type;
+        this.url = url;
+        this.start = start;
+        this.end = end;
     }
 
-    public int getAppointmentId() {
+    public IntegerProperty getAppointmentId() {
         return appointmentId;
     }
 
-    public void setAppointmentId(int appointmentId) {
+    public void setAppointmentId(IntegerProperty appointmentId) {
         this.appointmentId = appointmentId;
     }
 
-    public int getCustomerId() {
+    public IntegerProperty getCustomerId() {
         return customerId;
     }
 
-    public void setCustomerId(int customerId) {
+    public void setCustomerId(IntegerProperty customerId) {
         this.customerId = customerId;
     }
 
-    public int getUserId() {
+    public IntegerProperty getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(IntegerProperty userId) {
         this.userId = userId;
     }
 
-    public String getTitle() {
+    public StringProperty getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
+    public void setTitle(StringProperty title) {
         this.title = title;
     }
 
-    public String getDescription() {
+    public StringProperty getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(StringProperty description) {
         this.description = description;
     }
 
-    public String getLocation() {
+    public StringProperty getLocation() {
         return location;
     }
 
-    public void setLocation(String location) {
+    public void setLocation(StringProperty location) {
         this.location = location;
     }
 
-    public String getContact() {
+    public StringProperty getContact() {
         return contact;
     }
 
-    public void setContact(String contact) {
+    public void setContact(StringProperty contact) {
         this.contact = contact;
     }
 
-    public String getType() {
+    public StringProperty getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(StringProperty type) {
         this.type = type;
     }
 
-    public String getUrl() {
+    public StringProperty getUrl() {
         return url;
     }
 
-    public void setUrl(String url) {
+    public void setUrl(StringProperty url) {
         this.url = url;
     }
 
@@ -150,5 +178,13 @@ public class Appointment {
 
     public void setLastUpdateBy(String lastUpdateBy) {
         this.lastUpdateBy = lastUpdateBy;
+    }
+    
+    public StringProperty getCustName() {
+        return custName;
+    }
+    
+    public void setCustName(StringProperty custName) {
+        this.custName = custName;
     }
 }

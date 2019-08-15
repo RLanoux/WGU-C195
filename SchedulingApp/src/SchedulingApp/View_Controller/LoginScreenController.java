@@ -91,19 +91,18 @@ public class LoginScreenController implements Initializable {
                 if (userLogin.getUserName().equals(u.getUserName()) && userLogin.getPassword().equals(u.getPassword())) {
                     found = true;
                         try {
-                            FXMLLoader loader = new FXMLLoader();
-                            loader.setLocation(SchedulingApp.class.getResource("/SchedulingApp/View_Controller/AppointmentCalendar.fxml"));
-                            Parent ApptCalScreen = loader.load();
-                            Scene ApptCalScene = new Scene(ApptCalScreen);
-                            Stage ApptCalStage = new Stage();
-                            ApptCalStage.setScene(ApptCalScene);
-                            ApptCalStage.setTitle("Appointment Calendar");
-                            ApptCalStage.show();
+                            FXMLLoader apptCalLoader = new FXMLLoader(AppointmentCalendarController.class.getResource("AppointmentCalendar.fxml"));
+                            Parent apptCalScreen = apptCalLoader.load();
+                            Scene apptCalScene = new Scene(apptCalScreen);
+                            Stage apptCalStage = new Stage();
+                            apptCalStage.setTitle("Appointment Calendar");
+                            apptCalStage.setScene(apptCalScene);
+                            apptCalStage.show();
+                            Stage loginStage = (Stage) btnLogin.getScene().getWindow();
+                            loginStage.close();
                         }
                         catch (IOException e) {
                         }
-                        //Stage stage = (Stage) btnLogin.getScene().getWindow();
-                        //stage.close();
                 } 
             }
             if (!found) {

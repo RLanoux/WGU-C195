@@ -7,11 +7,12 @@ package SchedulingApp.View_Controller;
 
 import static SchedulingApp.DAO.DBAppointment.getApptsByWeek;
 import SchedulingApp.Model.Appointment;
-import SchedulingApp.Model.Customer;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ResourceBundle;
+import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -21,7 +22,6 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 /**
@@ -65,7 +65,7 @@ public class AppointmentCalendarController implements Initializable {
     private TableView<Appointment> tvWeeklyAppts;
 
     @FXML
-    private TableColumn<Customer, String> tcWeeklyCustName;
+    private TableColumn<Appointment, String> tcWeeklyCustName;
 
     @FXML
     private TableColumn<Appointment, String> tcWeeklyApptTitle;
@@ -98,7 +98,7 @@ public class AppointmentCalendarController implements Initializable {
     private TableView<Appointment> tvMonthlyAppts;
 
     @FXML
-    private TableColumn<Customer, String> tcMonthlyCustName;
+    private TableColumn<Appointment, String> tcMonthlyCustName;
 
     @FXML
     private TableColumn<Appointment, String> tcMonthlyApptTitle;
@@ -125,12 +125,12 @@ public class AppointmentCalendarController implements Initializable {
     private TableColumn<Appointment, LocalDateTime> tcMonthlyApptEnd;
 
     @FXML
-    void getWeeklyAppts(ActionEvent event) {
-        updateWeeklyApptTV();
+    void getWeeklyAppts(Event event) {
+        
     }
     
     @FXML
-    void getMonthlyAppts(ActionEvent event) {
+    void getMonthlyAppts(Event event) {
 
     }
     
@@ -190,18 +190,13 @@ public class AppointmentCalendarController implements Initializable {
         }
     }
     
-    @FXML
-    public void updateWeeklyApptTV() {
-        tvWeeklyAppts.setItems(getApptsByWeek());
-    }
-    
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        tcWeeklyCustName.setCellValueFactory(new PropertyValueFactory<>("customerName"));
-        updateWeeklyApptTV();
+        tcWeeklyCustName.setCellValueFactory(cellData -> { return cellData.getValue().getCustName(); });
+        tvWeeklyAppts.getItems().addAll(getApptsByWeek());
     }    
     
 }
