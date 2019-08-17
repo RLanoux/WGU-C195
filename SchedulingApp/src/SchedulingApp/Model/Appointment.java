@@ -7,6 +7,8 @@ package SchedulingApp.Model;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZonedDateTime;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.StringProperty;
 
@@ -24,7 +26,7 @@ public class Appointment {
     private StringProperty contact;
     private StringProperty type;
     private StringProperty url;
-    private LocalDateTime start;
+    private ZonedDateTime start;
     private LocalDateTime end;
     private LocalDateTime createDate;
     private String createdBy;
@@ -43,7 +45,7 @@ public class Appointment {
             StringProperty contact,
             StringProperty type,
             StringProperty url,
-            LocalDateTime start,
+            ZonedDateTime start,
             LocalDateTime end) 
     {
         this.custName = custName;
@@ -132,11 +134,11 @@ public class Appointment {
         this.url = url;
     }
 
-    public LocalDateTime getStart() {
+    public ZonedDateTime getStart() {
         return start;
     }
 
-    public void setStart(LocalDateTime start) {
+    public void setStart(ZonedDateTime start) {
         this.start = start;
     }
 

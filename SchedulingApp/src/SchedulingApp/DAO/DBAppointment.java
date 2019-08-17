@@ -1,14 +1,14 @@
 package SchedulingApp.DAO;
 
-import static Main.SchedulingApp.loggedUser;
 import static SchedulingApp.DAO.DBConnector.DB_CONN;
 import SchedulingApp.Model.Appointment;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -21,8 +21,8 @@ public class DBAppointment {
     
     public static ObservableList<Appointment> getApptsByWeek() {
         ObservableList<Appointment> apptsByWeek = FXCollections.observableArrayList();
-        String getApptsByWeekSQL = "SELECT customer.customerName, appointment.* FROM customer"
-                + "RIGHT JOIN appointment ON customer.customerId = appointment.customerId"
+        String getApptsByWeekSQL = "SELECT customer.customerName, appointment.* FROM customer "
+                + "RIGHT JOIN appointment ON customer.customerId = appointment.customerId "
                 + "WHERE start BETWEEN NOW() AND (SELECT ADDDATE(NOW(), INTERVAL 7 DAY))";
         
         try {
@@ -41,20 +41,20 @@ public class DBAppointment {
                         new SimpleStringProperty(rs.getString("contact")),
                         new SimpleStringProperty(rs.getString("type")),
                         new SimpleStringProperty(rs.getString("url")),
-                        new SimpleObjectProperty(rs.getTimestamp("start").toLocalDateTime()),
-                        new SimpleObjectProperty(rs.getTimestamp("end").toLocalDateTime())
+                        new ZonedDateTime(rs.getTimestamp("start").toLocalDateTime(), (ZoneId.systemDefault()), ZoneOffset.systemDefault()),
+                        rs.getTimestamp("end").toLocalDateTime()
                 ));
             }
         }
         catch (SQLException e) {
-            e.getMessage();
+            e.printStackTrace();
         }
         return apptsByWeek;
     }
     public static ObservableList<Appointment> getApptsByMonth() {
         ObservableList<Appointment> apptsByMonth = FXCollections.observableArrayList();
-        String getApptsByMonthSQL = "SELECT customer.customerName, appointment.* FROM customer"
-                + "RIGHT JOIN appointment ON customer.customerId = appointment.customerId"
+        String getApptsByMonthSQL = "SELECT customer.customerName, appointment.* FROM customer "
+                + "RIGHT JOIN appointment ON customer.customerId = appointment.customerId "
                 + "WHERE start BETWEEN NOW() AND (SELECT LAST_DAY(NOW()))";
         
         try {
@@ -73,8 +73,8 @@ public class DBAppointment {
                         new SimpleStringProperty(rs.getString("contact")),
                         new SimpleStringProperty(rs.getString("type")),
                         new SimpleStringProperty(rs.getString("url")),
-                        new SimpleObjectProperty(rs.getTimestamp("start").toLocalDateTime()),
-                        new SimpleObjectProperty(rs.getTimestamp("end").toLocalDateTime())
+                        new ZonedDateTime(rs.getTimestamp("start").toLocalDateTime(), (ZoneId.systemDefault()), ZoneOffset.systemDefault()),
+                        rs.getTimestamp("end").toLocalDateTime()
                 ));
             }
         }
@@ -85,35 +85,36 @@ public class DBAppointment {
     }
     public Appointment getApptById(int appointmentId) {
         String getApptByIdSQL = "SELECT * FROM appointment WHERE appointmentId = ?";
-        
+        Appointment getApptById = null;
         try {
             PreparedStatement stmt = DB_CONN.prepareStatement(getApptByIdSQL);
             stmt.setInt(1, appointmentId);
             ResultSet rs = stmt.executeQuery();
             
             if (rs.next()) {
-                Appointment getApptById = new Appointment(
-                new SimpleStringProperty(rs.getString("customerName")), 
-                new SimpleIntegerProperty(rs.getInt("appointmentId")),
-                new SimpleIntegerProperty(rs.getInt("customerId")),
-                new SimpleIntegerProperty(rs.getInt("userId")),
-                new SimpleStringProperty(rs.getString("title")),
-                new SimpleStringProperty(rs.getString("description")),
-                new SimpleStringProperty(rs.getString("location")),
-                new SimpleStringProperty(rs.getString("contact")),
-                new SimpleStringProperty(rs.getString("type")),
-                new SimpleStringProperty(rs.getString("url")),
-                new SimpleObjectProperty(rs.getTimestamp("start").toLocalDateTime()),
-                new SimpleObjectProperty(rs.getTimestamp("end").toLocalDateTime())
+                getApptById = new Appointment(
+                        new SimpleStringProperty(rs.getString("customerName")),
+                        new SimpleIntegerProperty(rs.getInt("appointmentId")),
+                        new SimpleIntegerProperty(rs.getInt("customerId")),
+                        new SimpleIntegerProperty(rs.getInt("userId")),
+                        new SimpleStringProperty(rs.getString("title")),
+                        new SimpleStringProperty(rs.getString("description")),
+                        new SimpleStringProperty(rs.getString("location")),
+                        new SimpleStringProperty(rs.getString("contact")),
+                        new SimpleStringProperty(rs.getString("type")),
+                        new SimpleStringProperty(rs.getString("url")),
+                        new ZonedDateTime(rs.getTimestamp("start").toLocalDateTime(), (ZoneId.systemDefault()), ZoneOffset.systemDefault()),
+                        rs.getTimestamp("end").toLocalDateTime()
                 );
             }
         }
         catch (SQLException e) {
+            e.printStackTrace();
         }
         return getApptById;
     }
 
-    public int addAppointment(Appointment appointment) {
+    /*public int addAppointment(Appointment appointment) {
         String addAppointmentSQL = String.join(" ",
                 "INSERT INTO appointment (customerId, userId, title,"
                             + "description, location, contact, type, url, start, end,"
@@ -176,5 +177,5 @@ public class DBAppointment {
         }
         catch (SQLException e) {
         }
-    }
+    }*/
 }

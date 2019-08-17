@@ -5,12 +5,13 @@
  */
 package SchedulingApp.View_Controller;
 
+import static SchedulingApp.DAO.DBAppointment.getApptsByMonth;
 import static SchedulingApp.DAO.DBAppointment.getApptsByWeek;
 import SchedulingApp.Model.Appointment;
 import java.net.URL;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.ResourceBundle;
-import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -86,7 +87,7 @@ public class AppointmentCalendarController implements Initializable {
     private TableColumn<Appointment, String> tcWeeklyApptURL;
 
     @FXML
-    private TableColumn<Appointment, LocalDateTime> tcWeeklyApptStart;
+    private TableColumn<Appointment, ZonedDateTime> tcWeeklyApptStart;
 
     @FXML
     private TableColumn<Appointment, LocalDateTime> tcWeeklyApptEnd;
@@ -196,7 +197,18 @@ public class AppointmentCalendarController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         tcWeeklyCustName.setCellValueFactory(cellData -> { return cellData.getValue().getCustName(); });
+        tcWeeklyApptTitle.setCellValueFactory(cellData -> { return cellData.getValue().getTitle(); });
+        tcWeeklyApptDescription.setCellValueFactory(cellData -> { return cellData.getValue().getDescription(); });
+        tcWeeklyApptLocation.setCellValueFactory(cellData -> { return cellData.getValue().getLocation(); });
+        tcWeeklyApptContact.setCellValueFactory(cellData -> { return cellData.getValue().getContact(); });
+        tcWeeklyApptType.setCellValueFactory(cellData -> { return cellData.getValue().getType(); });
+        tcWeeklyApptURL.setCellValueFactory(cellData -> { return cellData.getValue().getUrl(); });
+        tcWeeklyApptStart.setCellValueFactory(cellData -> { return cellData.getValue().getStart(); });
+        //tcWeeklyApptEnd.setCellValueFactory(cellData -> { return cellData.getValue().getEnd(); });
         tvWeeklyAppts.getItems().addAll(getApptsByWeek());
+        tcMonthlyCustName.setCellValueFactory(cellData -> { return cellData.getValue().getCustName(); });
+        tcMonthlyApptTitle.setCellValueFactory(cellData -> { return cellData.getValue().getTitle(); });
+        tvMonthlyAppts.getItems().addAll(getApptsByMonth());
     }    
     
 }
