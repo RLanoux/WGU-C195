@@ -1,13 +1,17 @@
 package SchedulingApp.DAO;
 
+import static Main.SchedulingApp.loggedUser;
 import static SchedulingApp.DAO.DBConnector.DB_CONN;
 import SchedulingApp.Model.Appointment;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -18,6 +22,7 @@ import javafx.collections.ObservableList;
  * @author Raymond Lanoux <rlanoux@wgu.edu>
  */
 public class DBAppointment {
+    private static ZoneId zId = ZoneId.systemDefault();
     
     public static ObservableList<Appointment> getApptsByWeek() {
         ObservableList<Appointment> apptsByWeek = FXCollections.observableArrayList();
@@ -30,20 +35,26 @@ public class DBAppointment {
             ResultSet rs = stmt.executeQuery();
             
             while (rs.next()) {
-                apptsByWeek.add(new Appointment(
-                        new SimpleStringProperty(rs.getString("customerName")), 
-                        new SimpleIntegerProperty(rs.getInt("appointmentId")),
-                        new SimpleIntegerProperty(rs.getInt("customerId")),
-                        new SimpleIntegerProperty(rs.getInt("userId")),
-                        new SimpleStringProperty(rs.getString("title")),
-                        new SimpleStringProperty(rs.getString("description")),
-                        new SimpleStringProperty(rs.getString("location")),
-                        new SimpleStringProperty(rs.getString("contact")),
-                        new SimpleStringProperty(rs.getString("type")),
-                        new SimpleStringProperty(rs.getString("url")),
-                        new ZonedDateTime(rs.getTimestamp("start").toLocalDateTime(), (ZoneId.systemDefault()), ZoneOffset.systemDefault()),
-                        rs.getTimestamp("end").toLocalDateTime()
-                ));
+                Appointment getWeeklyAppts = new Appointment();
+                getWeeklyAppts.setCustName(new SimpleStringProperty(rs.getString("customerName")));
+                getWeeklyAppts.setAppointmentId(new SimpleIntegerProperty(rs.getInt("appointmentId")));
+                getWeeklyAppts.setCustomerId(new SimpleIntegerProperty(rs.getInt("customerId")));
+                getWeeklyAppts.setUserId(new SimpleIntegerProperty(rs.getInt("userId")));
+                getWeeklyAppts.setTitle(new SimpleStringProperty(rs.getString("title")));
+                getWeeklyAppts.setDescription(new SimpleStringProperty(rs.getString("description")));
+                getWeeklyAppts.setLocation(new SimpleStringProperty(rs.getString("location")));
+                getWeeklyAppts.setContact(new SimpleStringProperty(rs.getString("contact")));
+                getWeeklyAppts.setType(new SimpleStringProperty(rs.getString("type")));
+                getWeeklyAppts.setUrl(new SimpleStringProperty(rs.getString("url")));
+                
+                LocalDateTime startUTC = rs.getTimestamp("start").toLocalDateTime();
+                LocalDateTime endUTC = rs.getTimestamp("end").toLocalDateTime();
+                ZonedDateTime startLocal = ZonedDateTime.ofInstant(startUTC.toInstant(ZoneOffset.UTC), zId);
+                ZonedDateTime endLocal = ZonedDateTime.ofInstant(endUTC.toInstant(ZoneOffset.UTC), zId);
+                
+                getWeeklyAppts.setStart(startLocal);
+                getWeeklyAppts.setEnd(endLocal);
+                apptsByWeek.add(getWeeklyAppts);
             }
         }
         catch (SQLException e) {
@@ -62,20 +73,26 @@ public class DBAppointment {
             ResultSet rs = stmt.executeQuery();
             
             while (rs.next()) {
-                apptsByMonth.add(new Appointment(
-                        new SimpleStringProperty(rs.getString("customerName")), 
-                        new SimpleIntegerProperty(rs.getInt("appointmentId")),
-                        new SimpleIntegerProperty(rs.getInt("customerId")),
-                        new SimpleIntegerProperty(rs.getInt("userId")),
-                        new SimpleStringProperty(rs.getString("title")),
-                        new SimpleStringProperty(rs.getString("description")),
-                        new SimpleStringProperty(rs.getString("location")),
-                        new SimpleStringProperty(rs.getString("contact")),
-                        new SimpleStringProperty(rs.getString("type")),
-                        new SimpleStringProperty(rs.getString("url")),
-                        new ZonedDateTime(rs.getTimestamp("start").toLocalDateTime(), (ZoneId.systemDefault()), ZoneOffset.systemDefault()),
-                        rs.getTimestamp("end").toLocalDateTime()
-                ));
+                Appointment getMonthlyAppts = new Appointment();
+                getMonthlyAppts.setCustName(new SimpleStringProperty(rs.getString("customerName")));
+                getMonthlyAppts.setAppointmentId(new SimpleIntegerProperty(rs.getInt("appointmentId")));
+                getMonthlyAppts.setCustomerId(new SimpleIntegerProperty(rs.getInt("customerId")));
+                getMonthlyAppts.setUserId(new SimpleIntegerProperty(rs.getInt("userId")));
+                getMonthlyAppts.setTitle(new SimpleStringProperty(rs.getString("title")));
+                getMonthlyAppts.setDescription(new SimpleStringProperty(rs.getString("description")));
+                getMonthlyAppts.setLocation(new SimpleStringProperty(rs.getString("location")));
+                getMonthlyAppts.setContact(new SimpleStringProperty(rs.getString("contact")));
+                getMonthlyAppts.setType(new SimpleStringProperty(rs.getString("type")));
+                getMonthlyAppts.setUrl(new SimpleStringProperty(rs.getString("url")));
+                
+                LocalDateTime startUTC = rs.getTimestamp("start").toLocalDateTime();
+                LocalDateTime endUTC = rs.getTimestamp("end").toLocalDateTime();
+                ZonedDateTime startLocal = ZonedDateTime.ofInstant(startUTC.toInstant(ZoneOffset.UTC), zId);
+                ZonedDateTime endLocal = ZonedDateTime.ofInstant(endUTC.toInstant(ZoneOffset.UTC), zId);
+                
+                getMonthlyAppts.setStart(startLocal);
+                getMonthlyAppts.setEnd(endLocal);
+                apptsByMonth.add(getMonthlyAppts);
             }
         }
         catch (SQLException e) {
@@ -84,28 +101,33 @@ public class DBAppointment {
         return apptsByMonth;
     }
     public Appointment getApptById(int appointmentId) {
-        String getApptByIdSQL = "SELECT * FROM appointment WHERE appointmentId = ?";
-        Appointment getApptById = null;
+        String getApptByIdSQL = "SELECT customer.customerName, appointment.* FROM customer "
+                + "RIGHT JOIN appointment ON customer.customerId = appointment.customerId " 
+                +"WHERE appointmentId = ?";
+        Appointment getApptById = new Appointment();
         try {
             PreparedStatement stmt = DB_CONN.prepareStatement(getApptByIdSQL);
             stmt.setInt(1, appointmentId);
             ResultSet rs = stmt.executeQuery();
             
             if (rs.next()) {
-                getApptById = new Appointment(
-                        new SimpleStringProperty(rs.getString("customerName")),
-                        new SimpleIntegerProperty(rs.getInt("appointmentId")),
-                        new SimpleIntegerProperty(rs.getInt("customerId")),
-                        new SimpleIntegerProperty(rs.getInt("userId")),
-                        new SimpleStringProperty(rs.getString("title")),
-                        new SimpleStringProperty(rs.getString("description")),
-                        new SimpleStringProperty(rs.getString("location")),
-                        new SimpleStringProperty(rs.getString("contact")),
-                        new SimpleStringProperty(rs.getString("type")),
-                        new SimpleStringProperty(rs.getString("url")),
-                        new ZonedDateTime(rs.getTimestamp("start").toLocalDateTime(), (ZoneId.systemDefault()), ZoneOffset.systemDefault()),
-                        rs.getTimestamp("end").toLocalDateTime()
-                );
+                getApptById.setCustName(new SimpleStringProperty(rs.getString("customerName")));
+                getApptById.setCustomerId(new SimpleIntegerProperty(rs.getInt("customerId")));
+                getApptById.setUserId(new SimpleIntegerProperty(rs.getInt("userId")));
+                getApptById.setTitle(new SimpleStringProperty(rs.getString("title")));
+                getApptById.setDescription(new SimpleStringProperty(rs.getString("description")));
+                getApptById.setLocation(new SimpleStringProperty(rs.getString("location")));
+                getApptById.setContact(new SimpleStringProperty(rs.getString("contact")));
+                getApptById.setType(new SimpleStringProperty(rs.getString("type")));
+                getApptById.setUrl(new SimpleStringProperty(rs.getString("url")));
+                
+                LocalDateTime startUTC = rs.getTimestamp("start").toLocalDateTime();
+                LocalDateTime endUTC = rs.getTimestamp("end").toLocalDateTime();
+                ZonedDateTime startLocal = ZonedDateTime.ofInstant(startUTC.toInstant(ZoneOffset.UTC), zId);
+                ZonedDateTime endLocal = ZonedDateTime.ofInstant(endUTC.toInstant(ZoneOffset.UTC), zId);
+                
+                getApptById.setStart(startLocal);
+                getApptById.setEnd(endLocal);
             }
         }
         catch (SQLException e) {
@@ -114,33 +136,35 @@ public class DBAppointment {
         return getApptById;
     }
 
-    /*public int addAppointment(Appointment appointment) {
+    public Appointment addAppointment(Appointment appointment) {
         String addAppointmentSQL = String.join(" ",
-                "INSERT INTO appointment (customerId, userId, title,"
-                            + "description, location, contact, type, url, start, end,"
-                            + "createDate, createdBy, lastUpdate, lastUpdateBy)",
-                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?, NOW(), ?)");
+                "INSERT INTO appointment (customerId, userId, title, "
+                            + "description, location, contact, type, url, start, end, "
+                            + "createDate, createdBy, lastUpdate, lastUpdateBy) ",
+                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?, NOW(), ?)");
         
         try {
             PreparedStatement stmt = DB_CONN.prepareStatement(addAppointmentSQL);
-            stmt.setInt(1, appointmentId);
-            stmt.setInt(2, appointment.getCustomerId());
-            stmt.setInt(3, appointment.getUserId());
-            stmt.setString(4, appointment.getTitle());
-            stmt.setString(5, appointment.getDescription());
-            stmt.setString(6, appointment.getLocation());
-            stmt.setString(7, appointment.getContact());
-            stmt.setString(8, appointment.getType());
-            stmt.setString(9, appointment.getUrl());
-            stmt.setObject(10, appointment.getStart());
-            stmt.setObject(11, appointment.getEnd());
+            stmt.setInt(1,  (appointment.getCustomerId()));
+            stmt.setInt(2, (appointment.getUserId()));
+            stmt.setString(3, (appointment.getTitle()));
+            stmt.setString(4, (appointment.getDescription()));
+            stmt.setString(5, (appointment.getLocation()));
+            stmt.setString(6, (appointment.getContact()));
+            stmt.setString(7, (appointment.getType()));
+            stmt.setString(8, (appointment.getUrl()));
+            
+            LocalDateTime startUTC = appointment.getStart().toLocalDateTime();
+            LocalDateTime endUTC = appointment.getEnd().toLocalDateTime();
+            stmt.setTimestamp(9, Timestamp.valueOf(startUTC));
+            stmt.setTimestamp(10, Timestamp.valueOf(endUTC));
+            stmt.setString(11, loggedUser.getUserName());
             stmt.setString(12, loggedUser.getUserName());
-            stmt.setString(13, loggedUser.getUserName());
             stmt.executeUpdate();
         }
         catch (SQLException e){
         }
-        return appointmentId;
+        return appointment;
     }
     public void updateAppointment(Appointment appointment) {
         String updateApptSQL = String.join(" ",
@@ -173,9 +197,9 @@ public class DBAppointment {
         
         try {
             PreparedStatement stmt = DB_CONN.prepareStatement(deleteAppointmentSQL);
-            stmt.setInt(1, appointment.getAppointmentId());
+            stmt.setInt(1, (appointment.getAppointmentId()));
         }
         catch (SQLException e) {
         }
-    }*/
+    }
 }

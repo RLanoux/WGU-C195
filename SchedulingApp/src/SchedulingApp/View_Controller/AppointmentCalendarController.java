@@ -10,8 +10,9 @@ import static SchedulingApp.DAO.DBAppointment.getApptsByWeek;
 import SchedulingApp.Model.Appointment;
 import java.net.URL;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -23,6 +24,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 /**
@@ -87,10 +89,10 @@ public class AppointmentCalendarController implements Initializable {
     private TableColumn<Appointment, String> tcWeeklyApptURL;
 
     @FXML
-    private TableColumn<Appointment, ZonedDateTime> tcWeeklyApptStart;
+    private TableColumn<Appointment, String> tcWeeklyApptStart;
 
     @FXML
-    private TableColumn<Appointment, LocalDateTime> tcWeeklyApptEnd;
+    private TableColumn<Appointment, String> tcWeeklyApptEnd;
 
     @FXML
     private Tab tpMonthlyAppts;
@@ -120,10 +122,13 @@ public class AppointmentCalendarController implements Initializable {
     private TableColumn<Appointment, String> tcMonthlyApptURL;
 
     @FXML
-    private TableColumn<Appointment, LocalDateTime> tcMonthlyApptStart;
+    private TableColumn<Appointment, String> tcMonthlyApptStart;
 
     @FXML
-    private TableColumn<Appointment, LocalDateTime> tcMonthlyApptEnd;
+    private TableColumn<Appointment, String> tcMonthlyApptEnd;
+    
+    @FXML
+    private final DateTimeFormatter formatDT = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm a z");
 
     @FXML
     void getWeeklyAppts(Event event) {
@@ -203,11 +208,18 @@ public class AppointmentCalendarController implements Initializable {
         tcWeeklyApptContact.setCellValueFactory(cellData -> { return cellData.getValue().getContact(); });
         tcWeeklyApptType.setCellValueFactory(cellData -> { return cellData.getValue().getType(); });
         tcWeeklyApptURL.setCellValueFactory(cellData -> { return cellData.getValue().getUrl(); });
-        tcWeeklyApptStart.setCellValueFactory(cellData -> { return cellData.getValue().getStart(); });
-        //tcWeeklyApptEnd.setCellValueFactory(cellData -> { return cellData.getValue().getEnd(); });
+        tcWeeklyApptStart.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStart().format(formatDT)));
+        tcWeeklyApptEnd.setCellValueFactory(cellData ->  new SimpleStringProperty(cellData.getValue().getEnd().format(formatDT)));
         tvWeeklyAppts.getItems().addAll(getApptsByWeek());
         tcMonthlyCustName.setCellValueFactory(cellData -> { return cellData.getValue().getCustName(); });
         tcMonthlyApptTitle.setCellValueFactory(cellData -> { return cellData.getValue().getTitle(); });
+        tcMonthlyApptDescription.setCellValueFactory(cellData -> { return cellData.getValue().getDescription(); });
+        tcMonthlyApptLocation.setCellValueFactory(cellData -> { return cellData.getValue().getLocation(); });
+        tcMonthlyApptContact.setCellValueFactory(cellData -> { return cellData.getValue().getContact(); });
+        tcMonthlyApptType.setCellValueFactory(cellData -> { return cellData.getValue().getType(); });
+        tcMonthlyApptURL.setCellValueFactory(cellData -> { return cellData.getValue().getUrl(); });
+        tcMonthlyApptStart.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStart().format(formatDT)));
+        tcMonthlyApptEnd.setCellValueFactory(cellData ->  new SimpleStringProperty(cellData.getValue().getEnd().format(formatDT)));
         tvMonthlyAppts.getItems().addAll(getApptsByMonth());
     }    
     
