@@ -9,6 +9,8 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 /**
@@ -16,121 +18,132 @@ import javafx.beans.property.StringProperty;
  * @author P00306944
  */
 public class Appointment {
-    private IntegerProperty appointmentId;
-    private IntegerProperty customerId;
-    private IntegerProperty userId;
-    private StringProperty title;
-    private StringProperty description;
-    private StringProperty location;
-    private StringProperty contact;
-    private StringProperty type;
-    private StringProperty url;
+    private IntegerProperty appointmentId = new SimpleIntegerProperty();
+    private IntegerProperty customerId = new SimpleIntegerProperty();
+    private IntegerProperty userId = new SimpleIntegerProperty();
+    private StringProperty title = new SimpleStringProperty();
+    private StringProperty description = new SimpleStringProperty();
+    private StringProperty location = new SimpleStringProperty();
+    private StringProperty contact = new SimpleStringProperty();
+    private StringProperty type = new SimpleStringProperty();
+    private StringProperty url = new SimpleStringProperty();
     private ZonedDateTime start;
     private ZonedDateTime end;
     private LocalDateTime createDate;
     private String createdBy;
     private Timestamp lastUpdate;
     private String lastUpdateBy;
-    private StringProperty custName;
+    private Customer customer = new Customer();
     
-    public Appointment(
-            /*StringProperty custName, 
-            IntegerProperty appointmentId,
-            IntegerProperty customerId,
-            IntegerProperty userId,
-            StringProperty title,
-            StringProperty description,
-            StringProperty location,
-            StringProperty contact,
-            StringProperty type,
-            StringProperty url,
-            ZonedDateTime start,
-            ZonedDateTime end*/) 
-    {
-        /*this.custName = custName;
-        this.appointmentId = appointmentId;
-        this.customerId = customerId;
-        this.userId = userId;
-        this.title = title;
-        this.description = description;
-        this.location = location;
-        this.contact = contact;
-        this.type = type;
-        this.url = url;
-        this.start = start;
-        this.end = end;*/
+    public Appointment() {
     }
 
-    public IntegerProperty getAppointmentId() {
+    public final int getAppointmentId() {
+        return appointmentId.get();
+    }
+
+    public final void setAppointmentId(int appointmentId) {
+        this.appointmentId.set(appointmentId);
+    }
+    
+    public IntegerProperty appointmentIdProperty() {
         return appointmentId;
     }
 
-    public void setAppointmentId(IntegerProperty appointmentId) {
-        this.appointmentId = appointmentId;
+    public final int getCustomerId() {
+        return customerId.get();
     }
 
-    public IntegerProperty getCustomerId() {
+    public final void setCustomerId(int customerId) {
+        this.customerId.set(customerId);
+    }
+    
+    public IntegerProperty customerIdProperty() {
         return customerId;
     }
 
-    public void setCustomerId(IntegerProperty customerId) {
-        this.customerId = customerId;
+    public final int getUserId() {
+        return userId.get();
     }
 
-    public IntegerProperty getUserId() {
+    public final void setUserId(int userId) {
+        this.userId.set(userId);
+    }
+    
+    public IntegerProperty userIdProperty() {
         return userId;
     }
 
-    public void setUserId(IntegerProperty userId) {
-        this.userId = userId;
+    public String getTitle() {
+        return title.get();
     }
 
-    public StringProperty getTitle() {
+    public void setTitle(String title) {
+        this.title.set(title);
+    }
+    
+    public StringProperty titleProperty() {
         return title;
     }
 
-    public void setTitle(StringProperty title) {
-        this.title = title;
+    public String getDescription() {
+        return description.get();
     }
 
-    public StringProperty getDescription() {
+    public void setDescription(String description) {
+        this.description.set(description);
+    }
+    
+    public StringProperty descriptionProperty() {
         return description;
     }
 
-    public void setDescription(StringProperty description) {
-        this.description = description;
+    public String getLocation() {
+        return location.get();
     }
 
-    public StringProperty getLocation() {
+    public void setLocation(String location) {
+        this.location.set(location);
+    }
+    
+    public StringProperty locationProperty() {
         return location;
     }
 
-    public void setLocation(StringProperty location) {
-        this.location = location;
+    public String getContact() {
+        return contact.get();
     }
 
-    public StringProperty getContact() {
+    public void setContact(String contact) {
+        this.contact.set(contact);
+    }
+    
+    public StringProperty contactProperty() {
         return contact;
     }
 
-    public void setContact(StringProperty contact) {
-        this.contact = contact;
+    public String getType() {
+        return type.get();
     }
 
-    public StringProperty getType() {
+    public void setType(String type) {
+        this.type.set(type);
+    }
+    
+    public StringProperty typeProperty() {
         return type;
     }
 
-    public void setType(StringProperty type) {
-        this.type = type;
+    public String getUrl() {
+        return url.get();
     }
 
-    public StringProperty getUrl() {
+    public void setUrl(String url) {
+        this.url.set(url);
+    }
+    
+    public StringProperty urlProperty() {
         return url;
-    }
-
-    public void setUrl(StringProperty url) {
-        this.url = url;
     }
 
     public ZonedDateTime getStart() {
@@ -181,11 +194,11 @@ public class Appointment {
         this.lastUpdateBy = lastUpdateBy;
     }
     
-    public StringProperty getCustName() {
-        return custName;
+    public Customer getCustomer() {
+        return customer;
     }
     
-    public void setCustName(StringProperty custName) {
-        this.custName = custName;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 }

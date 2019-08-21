@@ -2,16 +2,22 @@ package SchedulingApp.Model;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 /**
  *
  * @author Raymond Lanoux <rlanoux@wgu.edu>
  */
 public class Customer {
-    private int customerId;
-    private String customerName;
-    private int addressId;
-    private boolean active;
+    private IntegerProperty customerId = new SimpleIntegerProperty();
+    private StringProperty customerName = new SimpleStringProperty();
+    private IntegerProperty addressId = new SimpleIntegerProperty();
+    private BooleanProperty active = new SimpleBooleanProperty();
     private LocalDateTime createDate;
     private String createdBy;
     private Timestamp lastUpdate;
@@ -21,35 +27,51 @@ public class Customer {
     }
 
     public int getCustomerId() {
-        return customerId;
+        return customerId.get();
     }
 
     public void setCustomerId(int customerId) {
-        this.customerId = customerId;
+        this.customerId.set(customerId);
+    }
+    
+    public IntegerProperty customerIdProperty() {
+        return customerId;
     }
 
     public String getCustomerName() {
-        return customerName;
+        return customerName.get();
     }
 
     public void setCustomerName(String customerName) {
-        this.customerName = customerName;
+        this.customerName.set(customerName);
+    }
+    
+    public StringProperty customerNameProperty() {
+        return customerName;
     }
 
     public int getAddressId() {
-        return addressId;
+        return addressId.get();
     }
 
     public void setAddressId(int addressId) {
-        this.addressId = addressId;
+        this.addressId.set(addressId);
+    }
+    
+    public IntegerProperty addressIdProperty() {
+        return addressId;
     }
 
     public boolean isActive() {
-        return active;
+        return active.get();
     }
 
     public void setActive(boolean active) {
-        this.active = active;
+        this.active.set(active);
+    }
+    
+    public BooleanProperty activeProperty() {
+        return active;
     }
 
     public LocalDateTime getCreateDate() {

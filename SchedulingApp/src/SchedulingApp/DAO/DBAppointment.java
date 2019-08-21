@@ -11,9 +11,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -36,16 +33,16 @@ public class DBAppointment {
             
             while (rs.next()) {
                 Appointment getWeeklyAppts = new Appointment();
-                getWeeklyAppts.setCustName(new SimpleStringProperty(rs.getString("customerName")));
-                getWeeklyAppts.setAppointmentId(new SimpleIntegerProperty(rs.getInt("appointmentId")));
-                getWeeklyAppts.setCustomerId(new SimpleIntegerProperty(rs.getInt("customerId")));
-                getWeeklyAppts.setUserId(new SimpleIntegerProperty(rs.getInt("userId")));
-                getWeeklyAppts.setTitle(new SimpleStringProperty(rs.getString("title")));
-                getWeeklyAppts.setDescription(new SimpleStringProperty(rs.getString("description")));
-                getWeeklyAppts.setLocation(new SimpleStringProperty(rs.getString("location")));
-                getWeeklyAppts.setContact(new SimpleStringProperty(rs.getString("contact")));
-                getWeeklyAppts.setType(new SimpleStringProperty(rs.getString("type")));
-                getWeeklyAppts.setUrl(new SimpleStringProperty(rs.getString("url")));
+                getWeeklyAppts.getCustomer().setCustomerName(rs.getString("customerName"));
+                getWeeklyAppts.setAppointmentId(rs.getInt("appointmentId"));
+                getWeeklyAppts.setCustomerId(rs.getInt("customerId"));
+                getWeeklyAppts.setUserId(rs.getInt("userId"));
+                getWeeklyAppts.setTitle(rs.getString("title"));
+                getWeeklyAppts.setDescription(rs.getString("description"));
+                getWeeklyAppts.setLocation(rs.getString("location"));
+                getWeeklyAppts.setContact(rs.getString("contact"));
+                getWeeklyAppts.setType(rs.getString("type"));
+                getWeeklyAppts.setUrl(rs.getString("url"));
                 
                 LocalDateTime startUTC = rs.getTimestamp("start").toLocalDateTime();
                 LocalDateTime endUTC = rs.getTimestamp("end").toLocalDateTime();
@@ -74,16 +71,16 @@ public class DBAppointment {
             
             while (rs.next()) {
                 Appointment getMonthlyAppts = new Appointment();
-                getMonthlyAppts.setCustName(new SimpleStringProperty(rs.getString("customerName")));
-                getMonthlyAppts.setAppointmentId(new SimpleIntegerProperty(rs.getInt("appointmentId")));
-                getMonthlyAppts.setCustomerId(new SimpleIntegerProperty(rs.getInt("customerId")));
-                getMonthlyAppts.setUserId(new SimpleIntegerProperty(rs.getInt("userId")));
-                getMonthlyAppts.setTitle(new SimpleStringProperty(rs.getString("title")));
-                getMonthlyAppts.setDescription(new SimpleStringProperty(rs.getString("description")));
-                getMonthlyAppts.setLocation(new SimpleStringProperty(rs.getString("location")));
-                getMonthlyAppts.setContact(new SimpleStringProperty(rs.getString("contact")));
-                getMonthlyAppts.setType(new SimpleStringProperty(rs.getString("type")));
-                getMonthlyAppts.setUrl(new SimpleStringProperty(rs.getString("url")));
+                getMonthlyAppts.getCustomer().setCustomerName(rs.getString("customerName"));
+                getMonthlyAppts.setAppointmentId(rs.getInt("appointmentId"));
+                getMonthlyAppts.setCustomerId(rs.getInt("customerId"));
+                getMonthlyAppts.setUserId(rs.getInt("userId"));
+                getMonthlyAppts.setTitle(rs.getString("title"));
+                getMonthlyAppts.setDescription(rs.getString("description"));
+                getMonthlyAppts.setLocation(rs.getString("location"));
+                getMonthlyAppts.setContact(rs.getString("contact"));
+                getMonthlyAppts.setType(rs.getString("type"));
+                getMonthlyAppts.setUrl(rs.getString("url"));
                 
                 LocalDateTime startUTC = rs.getTimestamp("start").toLocalDateTime();
                 LocalDateTime endUTC = rs.getTimestamp("end").toLocalDateTime();
@@ -111,15 +108,15 @@ public class DBAppointment {
             ResultSet rs = stmt.executeQuery();
             
             if (rs.next()) {
-                getApptById.setCustName(new SimpleStringProperty(rs.getString("customerName")));
-                getApptById.setCustomerId(new SimpleIntegerProperty(rs.getInt("customerId")));
-                getApptById.setUserId(new SimpleIntegerProperty(rs.getInt("userId")));
-                getApptById.setTitle(new SimpleStringProperty(rs.getString("title")));
-                getApptById.setDescription(new SimpleStringProperty(rs.getString("description")));
-                getApptById.setLocation(new SimpleStringProperty(rs.getString("location")));
-                getApptById.setContact(new SimpleStringProperty(rs.getString("contact")));
-                getApptById.setType(new SimpleStringProperty(rs.getString("type")));
-                getApptById.setUrl(new SimpleStringProperty(rs.getString("url")));
+                getApptById.getCustomer().setCustomerName(rs.getString("customerName"));
+                getApptById.setCustomerId(rs.getInt("customerId"));
+                getApptById.setUserId(rs.getInt("userId"));
+                getApptById.setTitle(rs.getString("title"));
+                getApptById.setDescription(rs.getString("description"));
+                getApptById.setLocation(rs.getString("location"));
+                getApptById.setContact(rs.getString("contact"));
+                getApptById.setType(rs.getString("type"));
+                getApptById.setUrl(rs.getString("url"));
                 
                 LocalDateTime startUTC = rs.getTimestamp("start").toLocalDateTime();
                 LocalDateTime endUTC = rs.getTimestamp("end").toLocalDateTime();
@@ -145,19 +142,20 @@ public class DBAppointment {
         
         try {
             PreparedStatement stmt = DB_CONN.prepareStatement(addAppointmentSQL);
-            stmt.setInt(1,  (appointment.getCustomerId()));
-            stmt.setInt(2, (appointment.getUserId()));
-            stmt.setString(3, (appointment.getTitle()));
-            stmt.setString(4, (appointment.getDescription()));
-            stmt.setString(5, (appointment.getLocation()));
-            stmt.setString(6, (appointment.getContact()));
-            stmt.setString(7, (appointment.getType()));
-            stmt.setString(8, (appointment.getUrl()));
+            stmt.setObject(1, appointment.getCustomerId());
+            stmt.setObject(2, appointment.getUserId());
+            stmt.setObject(3, appointment.getTitle());
+            stmt.setObject(4, appointment.getDescription());
+            stmt.setObject(5, appointment.getLocation());
+            stmt.setObject(6, appointment.getContact());
+            stmt.setObject(7, appointment.getType());
+            stmt.setObject(8, appointment.getUrl());
             
             LocalDateTime startUTC = appointment.getStart().toLocalDateTime();
             LocalDateTime endUTC = appointment.getEnd().toLocalDateTime();
             stmt.setTimestamp(9, Timestamp.valueOf(startUTC));
             stmt.setTimestamp(10, Timestamp.valueOf(endUTC));
+            
             stmt.setString(11, loggedUser.getUserName());
             stmt.setString(12, loggedUser.getUserName());
             stmt.executeUpdate();
@@ -175,29 +173,33 @@ public class DBAppointment {
         
         try {
             PreparedStatement stmt = DB_CONN.prepareStatement(updateApptSQL);
-            stmt.setInt(1, appointment.getCustomerId());
-            stmt.setInt(2, appointment.getUserId());
-            stmt.setString(3, appointment.getTitle());
-            stmt.setString(4, appointment.getDescription());
-            stmt.setString(5, appointment.getLocation());
-            stmt.setString(6, appointment.getContact());
-            stmt.setString(7, appointment.getType());
-            stmt.setString(8, appointment.getUrl());
-            stmt.setObject(9, appointment.getStart());
-            stmt.setObject(10, appointment.getEnd());
+            stmt.setObject(1, appointment.getCustomerId());
+            stmt.setObject(2, appointment.getUserId());
+            stmt.setObject(3, appointment.getTitle());
+            stmt.setObject(4, appointment.getDescription());
+            stmt.setObject(5, appointment.getLocation());
+            stmt.setObject(6, appointment.getContact());
+            stmt.setObject(7, appointment.getType());
+            stmt.setObject(8, appointment.getUrl());
+            LocalDateTime startUTC = appointment.getStart().toLocalDateTime();
+            LocalDateTime endUTC = appointment.getEnd().toLocalDateTime();
+            stmt.setTimestamp(9, Timestamp.valueOf(startUTC));
+            stmt.setTimestamp(10, Timestamp.valueOf(endUTC));
+            
             stmt.setString(11, loggedUser.getUserName());
-            stmt.setInt(12, appointment.getAppointmentId());
+            stmt.setObject(12, appointment.getAppointmentId());
             stmt.executeUpdate();
         }
         catch (SQLException e) {
         }
     }
-    public void deleteAppointment(Appointment appointment) {
+    public static void deleteAppointment(Appointment appointment) {
         String deleteAppointmentSQL = "DELETE FROM appointment WHERE appointmentId = ?";
         
         try {
             PreparedStatement stmt = DB_CONN.prepareStatement(deleteAppointmentSQL);
-            stmt.setInt(1, (appointment.getAppointmentId()));
+            stmt.setObject(1, appointment.getAppointmentId());
+            stmt.executeUpdate();
         }
         catch (SQLException e) {
         }
