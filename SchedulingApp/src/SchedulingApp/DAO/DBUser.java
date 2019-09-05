@@ -1,7 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Desktop Scheduling Application for C195
+ * @author Raymond Lanoux <rlanoux@wgu.edu>
  */
 package SchedulingApp.DAO;
 
@@ -14,8 +13,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 /**
- *
- * @author P00306944
+ * This class contains the data access objects (DAOs) 
+ * for the user table in the MySQL database.
  */
 public class DBUser {
     

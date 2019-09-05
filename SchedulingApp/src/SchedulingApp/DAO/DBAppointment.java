@@ -1,8 +1,12 @@
+/**
+ * Desktop Scheduling Application for C195
+ * @author Raymond Lanoux <rlanoux@wgu.edu>
+ */
 package SchedulingApp.DAO;
 
-import static Main.SchedulingApp.loggedUser;
 import static SchedulingApp.DAO.DBConnector.DB_CONN;
 import SchedulingApp.Model.Appointment;
+import static SchedulingApp.View_Controller.LoginScreenController.loggedUser;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,8 +19,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 /**
- *
- * @author Raymond Lanoux <rlanoux@wgu.edu>
+ * This class contains the data access objects (DAOs) 
+ * for the appointment table in the MySQL database.
  */
 public class DBAppointment {
     private static ZoneId zId = ZoneId.systemDefault();
@@ -164,7 +168,7 @@ public class DBAppointment {
         }
         return appointment;
     }
-    public void updateAppointment(Appointment appointment) {
+    public static void updateAppointment(Appointment appointment) {
         String updateApptSQL = String.join(" ",
                 "UPDATE appointment",
                 "SET customerId=?, userId=?, title=?, description=?, location=?," +

@@ -1,18 +1,21 @@
+/**
+ * Desktop Scheduling Application for C195
+ * @author Raymond Lanoux <rlanoux@wgu.edu>
+ */
 package SchedulingApp.DAO;
 
-import static Main.SchedulingApp.loggedUser;
 import static SchedulingApp.DAO.DBConnector.DB_CONN;
 import SchedulingApp.Model.Customer;
+import static SchedulingApp.View_Controller.LoginScreenController.loggedUser;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 /**
- *
- * @author Raymond Lanoux <rlanoux@wgu.edu>
+ * This class contains the data access objects (DAOs) 
+ * for the customer table in the MySQL database.
  */
 public class DBCustomer {
     
@@ -39,7 +42,7 @@ public class DBCustomer {
             }
         }
         catch (SQLException e) {
-            e.getMessage();
+            e.printStackTrace();
         }
         return activeCustomers;
     }
@@ -49,7 +52,7 @@ public class DBCustomer {
      * @param customerId
      * @return getCustomerQuery
      */
-    public Customer getCustomerById(int customerId) {
+    public static Customer getCustomerById(int customerId) {
         String getCustomerByIdSQL = "SELECT * FROM customer WHERE customerId = ?";
         Customer getCustomerQuery = new Customer();
         
@@ -66,47 +69,39 @@ public class DBCustomer {
             }
         }
         catch (SQLException e) {
+            e.printStackTrace();
         }
         return getCustomerQuery;
     }
     
-    private int getMaxCustomerId() {
-        int maxCustomerId = 0;
-        String maxCustomerIdSQL = "SELECT MAX(customerId) FROM customer";
-        
-        try {
-            Statement stmt = DB_CONN.createStatement();
-            ResultSet rs = stmt.executeQuery(maxCustomerIdSQL);
-            
-            if (rs.next()) {
-                maxCustomerId = rs.getInt(1);
-            }
-        }
-        catch (SQLException e) {
-        }
-        return maxCustomerId + 1;
-    }
-    
-    public int addCustomer(Customer customer) {
+    /**
+     * This method adds a new Customer to the MySQL database.
+     * @param customer
+     * @return customer
+     */
+    public Customer addCustomer(Customer customer) {
         String addCustomerSQL = String.join(" ", 
-                "INSERT INTO customer (customerId, customerName, addressId, active, createDate, createdBy, lastUpdate, lastUpdateBy)",
-                "VALUES (?, ?, ?, 1, NOW(), ?, NOW(), ?)");
+                "INSERT INTO customer (customerName, addressId, active, createDate, createdBy, lastUpdate, lastUpdateBy)",
+                "VALUES (?, ?, 1, NOW(), ?, NOW(), ?)");
         
-        int customerId = getMaxCustomerId();
         try {
             PreparedStatement stmt = DB_CONN.prepareStatement(addCustomerSQL);
-            stmt.setInt(1, customerId);
-            stmt.setString(2, customer.getCustomerName());
-            stmt.setInt(3, customer.getAddressId());
+            stmt.setString(1, customer.getCustomerName());
+            stmt.setInt(2, customer.getAddressId());
+            stmt.setString(3, loggedUser.getUserName());
             stmt.setString(4, loggedUser.getUserName());
-            stmt.setString(5, loggedUser.getUserName());
             stmt.executeUpdate();
         }
         catch (SQLException e) {
+            e.printStackTrace();
         }
-        return customerId;
+        return customer;
     }
     
+    /**
+     * This method updates an existing Customer record in the MySQL database.
+     * @param customer
+     */
     public void updateCustomer(Customer customer) {
         String updateCustomerSQL = String.join(" ", 
                 "UPDATE customer",
@@ -125,6 +120,10 @@ public class DBCustomer {
         }
     }
     
+    /**
+     * This method deletes an existing Customer from the MySQL database.
+     * @param customer
+     */
     public void deleteCustomer(Customer customer) {
         String deleteCustomerSQL = "DELETE FROM customer WHERE customerId = ?";
         

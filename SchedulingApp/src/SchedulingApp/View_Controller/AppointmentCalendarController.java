@@ -1,7 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Desktop Scheduling Application for C195
+ * @author Raymond Lanoux <rlanoux@wgu.edu>
  */
 package SchedulingApp.View_Controller;
 
@@ -33,8 +32,10 @@ import javafx.stage.Stage;
 
 /**
  * FXML Controller class
- *
- * @author P00306944
+ * This class contains the code to view the appointment calendar by week and by month.
+ * This class also contains the code to switch to the appointment and customer records modification screens.
+ * This class also contains the code to switch to the reports and user logs screens.
+ * This class also contains the code that allows the appointment and customer records to be deleted.
  */
 public class AppointmentCalendarController implements Initializable {
     
@@ -134,11 +135,12 @@ public class AppointmentCalendarController implements Initializable {
     @FXML
     private final DateTimeFormatter formatDT = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm a z");
     
-    private static Appointment selectedAppt;
+    public static Appointment selectedAppt;
+    
 
     @FXML
-    void getWeeklyAppts(Event event) {
-        
+    void getWeeklyAppts() {
+
     }
     
     @FXML
@@ -186,6 +188,34 @@ public class AppointmentCalendarController implements Initializable {
             }
         else if (tpMonthlyAppts.isSelected()) {
             selectedAppt = tvMonthlyAppts.getSelectionModel().getSelectedItem();
+            if (selectedAppt == null) {
+                Alert nullAlert = new Alert(AlertType.ERROR);
+                nullAlert.setTitle("Appointment Modification Error");
+                nullAlert.setHeaderText("The appointment is not able to be modified!");
+                nullAlert.setContentText("There was no appointment selected!");
+                nullAlert.showAndWait();
+            }
+            else {
+                    Alert modAlert = new Alert(AlertType.CONFIRMATION);
+                    modAlert.setTitle("Modify Appointment");
+                    modAlert.setHeaderText("Are you sure you want to modify this appointment?");
+                    modAlert.setContentText("Press OK to modify the appointment. \nPress Cancel to cancel the modification.");
+                    modAlert.showAndWait();
+                    if (modAlert.getResult() == ButtonType.OK) {
+                        try {
+                            Appointment appt = tvWeeklyAppts.getSelectionModel().getSelectedItem();
+                            FXMLLoader modApptLoader = new FXMLLoader(ModifyAppointmentController.class.getResource("ModifyAppointment.fxml"));
+                            Parent modApptScreen = modApptLoader.load();
+                            Scene modApptScene = new Scene(modApptScreen);
+                            Stage modApptStage = new Stage();
+                            modApptStage.setTitle("Modify Appointment");
+                            modApptStage.setScene(modApptScene);
+                            modApptStage.show();
+                        }
+                        catch (IOException e) {
+                        }
+                    }
+                }
         }
     }
     
@@ -272,6 +302,8 @@ public class AppointmentCalendarController implements Initializable {
     
     /**
      * Initializes the controller class.
+     * @param url
+     * @param rb
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -295,6 +327,6 @@ public class AppointmentCalendarController implements Initializable {
         tcMonthlyApptStart.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStart().format(formatDT)));
         tcMonthlyApptEnd.setCellValueFactory(cellData ->  new SimpleStringProperty(cellData.getValue().getEnd().format(formatDT)));
         tvMonthlyAppts.getItems().addAll(getApptsByMonth());
-    }    
+    }
     
 }

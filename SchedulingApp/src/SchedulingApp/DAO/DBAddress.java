@@ -1,21 +1,20 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Desktop Scheduling Application for C195
+ * @author Raymond Lanoux <rlanoux@wgu.edu>
  */
 package SchedulingApp.DAO;
 
-import static Main.SchedulingApp.loggedUser;
 import static SchedulingApp.DAO.DBConnector.DB_CONN;
 import SchedulingApp.Model.Address;
+import static SchedulingApp.View_Controller.LoginScreenController.loggedUser;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 /**
- *
- * @author Raymond
+ * This class contains the data access objects (DAOs) 
+ * for the address table in the MySQL database.
  */
 public class DBAddress {
     

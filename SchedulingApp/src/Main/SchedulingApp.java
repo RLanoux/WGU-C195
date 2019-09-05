@@ -22,15 +22,6 @@ import javafx.stage.StageStyle;
  * @author Raymond
  */
 public class SchedulingApp extends Application {
-    public static User loggedUser;
-    
-    public void getCurrentUser(User currentUser) {
-        loggedUser = currentUser;
-        
-        if (currentUser != null) {
-            currentUser.getUserName();
-        }
-    }
     
     @Override
     public void start(Stage stage) throws ClassNotFoundException, SQLException, IOException, Exception {

@@ -1,7 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Desktop Scheduling Application for C195
+ * @author Raymond Lanoux <rlanoux@wgu.edu>
  */
 package SchedulingApp.DAO;
 import java.sql.Connection;
@@ -9,8 +8,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 /**
- *
- * @author Raymond
+ * This class contains the Java Database Connectivity (JDBC) API code
+ * that is used to gain access to the MySQL database.
  */
 public class DBConnector {
     private static final String DB_NAME = "U04PjR";

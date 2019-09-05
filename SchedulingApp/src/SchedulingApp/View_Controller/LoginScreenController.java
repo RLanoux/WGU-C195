@@ -5,7 +5,6 @@
  */
 package SchedulingApp.View_Controller;
 
-import Main.SchedulingApp;
 import SchedulingApp.DAO.DBUser;
 import SchedulingApp.Model.User;
 import java.io.IOException;
@@ -75,20 +74,19 @@ public class LoginScreenController implements Initializable {
 
     @FXML
     void getLoginAction(ActionEvent eLogin) throws IOException, Exception {
-        Integer userId;
         String username = txtUsername.getText();
         String password = txtPassword.getText();
-        Boolean active;
+        loggedUser.setUserName(username);
+        loggedUser.setPassword(password);
         
-        User userLogin = new User();
-        userLogin.setUserName(username);
-        userLogin.setPassword(password);
         
         try {
             ObservableList<User> userLoginInfo = DBUser.getActiveUsers();
             boolean found = false;
             for (User u: userLoginInfo) {
-                if (userLogin.getUserName().equals(u.getUserName()) && userLogin.getPassword().equals(u.getPassword())) {
+                if ((loggedUser.getUserName().equals(u.getUserName())) && (loggedUser.getPassword().equals(u.getPassword()))) {
+                    int userId = u.getUserId();
+                    loggedUser.setUserId(userId);
                     found = true;
                         try {
                             FXMLLoader apptCalLoader = new FXMLLoader(AppointmentCalendarController.class.getResource("AppointmentCalendar.fxml"));
@@ -114,6 +112,9 @@ public class LoginScreenController implements Initializable {
             e.printStackTrace();
         }
     }
+    
+    public static User loggedUser = new User();
+    
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
