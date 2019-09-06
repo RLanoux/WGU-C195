@@ -26,6 +26,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 
 /**
  * FXML Controller class
@@ -62,7 +63,7 @@ public class ModifyAppointmentController implements Initializable {
     private Label lblEnd;
 
     @FXML
-    private ComboBox<String> cbCustomer;
+    private ComboBox<Customer> cbCustomer;
 
     @FXML
     private TextField txtTitle;
@@ -130,21 +131,26 @@ public class ModifyAppointmentController implements Initializable {
         }
     }
     
-    
-    
     public Customer getActiveCustList() {
         ObservableList<Customer> activeCusts = DBCustomer.getActiveCustomers();
-        for (Customer c : activeCusts) {
-            
-            String custName = c.getCustomerName();
-            cbCustomer.getItems().add(custName);
-        }
+        cbCustomer.setItems(activeCusts);
+        cbCustomer.setConverter(new StringConverter<Customer>() {
+            @Override
+            public String toString(Customer cust) {
+                return cust.getCustomerName();
+            }
+
+            @Override
+            public Customer fromString(String string) {
+                return cbCustomer.getValue();
+            }
+        });
         return null;
     }
     
     public void getSelectedApptInfo() {
-        String customerName = selectedAppt.getCustomer().getCustomerName();
-        cbCustomer.setValue(customerName);
+        Customer selectedCust = selectedAppt.getCustomer();
+        cbCustomer.setValue(selectedCust);
         txtTitle.setText(selectedAppt.getTitle());
         txtDescription.setText(selectedAppt.getDescription());
         txtLocation.setText(selectedAppt.getLocation());
@@ -156,19 +162,20 @@ public class ModifyAppointmentController implements Initializable {
     }
     
     public void updateApptInfo() {
-        Appointment appt = new Appointment();
-        appt.setCustomerId();
-        appt.setUserId(loggedUser.getUserId());
-        appt.setTitle(txtTitle.getText());
-        appt.setDescription(txtDescription.getText());
-        appt.setLocation(txtLocation.getText());
-        appt.setContact(txtContact.getText());
-        appt.setType(txtType.getText());
-        appt.setUrl(txtUrl.getText());
-        appt.setStart(ZonedDateTime.parse(txtStart.getText(), formatDT));
-        appt.setEnd(ZonedDateTime.parse(txtStart.getText(), formatDT));
-        appt.setAppointmentId(selectedAppt.getAppointmentId());
-        DBAppointment.updateAppointment(appt);
+            Appointment appt = new Appointment();
+            appt.setCustomerId(selectedAppt.getCustomerId());
+            appt.setUserId(loggedUser.getUserId());
+            appt.setTitle(txtTitle.getText());
+            appt.setDescription(txtDescription.getText());
+            appt.setLocation(txtLocation.getText());
+            appt.setContact(txtContact.getText());
+            appt.setType(txtType.getText());
+            appt.setUrl(txtUrl.getText());
+            appt.setStart(ZonedDateTime.parse(txtStart.getText(), formatDT));
+            appt.setEnd(ZonedDateTime.parse(txtEnd.getText(), formatDT));
+            appt.setAppointmentId(selectedAppt.getAppointmentId());
+            DBAppointment.updateAppointment(appt);
+
     }
 
     /**
@@ -178,8 +185,8 @@ public class ModifyAppointmentController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        getActiveCustList();
         getSelectedApptInfo();
+        getActiveCustList();
     }    
     
 }
