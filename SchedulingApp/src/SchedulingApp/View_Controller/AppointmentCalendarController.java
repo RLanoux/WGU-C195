@@ -137,20 +137,55 @@ public class AppointmentCalendarController implements Initializable {
     
     public static Appointment selectedAppt;
     
-
-    @FXML
-    void getWeeklyAppts() {
-
+    /*@FXML
+    public void getWeeklyAppts() {
+        tcWeeklyCustName.setCellValueFactory(cellData -> { return cellData.getValue().getCustomer().customerNameProperty(); });
+        tcWeeklyApptTitle.setCellValueFactory(cellData -> { return cellData.getValue().titleProperty(); });
+        tcWeeklyApptDescription.setCellValueFactory(cellData -> { return cellData.getValue().descriptionProperty(); });
+        tcWeeklyApptLocation.setCellValueFactory(cellData -> { return cellData.getValue().locationProperty(); });
+        tcWeeklyApptContact.setCellValueFactory(cellData -> { return cellData.getValue().contactProperty(); });
+        tcWeeklyApptType.setCellValueFactory(cellData -> { return cellData.getValue().typeProperty(); });
+        tcWeeklyApptURL.setCellValueFactory(cellData -> { return cellData.getValue().urlProperty(); });
+        tcWeeklyApptStart.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStart().format(formatDT)));
+        tcWeeklyApptEnd.setCellValueFactory(cellData ->  new SimpleStringProperty(cellData.getValue().getEnd().format(formatDT)));
+        tvWeeklyAppts.getItems().addAll(getApptsByWeek());
     }
     
     @FXML
-    void getMonthlyAppts(Event event) {
-
-    }
+    public void getMonthlyAppts() {
+        tcMonthlyCustName.setCellValueFactory(cellData -> { return cellData.getValue().getCustomer().customerNameProperty(); });
+        tcMonthlyApptTitle.setCellValueFactory(cellData -> { return cellData.getValue().titleProperty(); });
+        tcMonthlyApptDescription.setCellValueFactory(cellData -> { return cellData.getValue().descriptionProperty(); });
+        tcMonthlyApptLocation.setCellValueFactory(cellData -> { return cellData.getValue().locationProperty(); });
+        tcMonthlyApptContact.setCellValueFactory(cellData -> { return cellData.getValue().contactProperty(); });
+        tcMonthlyApptType.setCellValueFactory(cellData -> { return cellData.getValue().typeProperty(); });
+        tcMonthlyApptURL.setCellValueFactory(cellData -> { return cellData.getValue().urlProperty(); });
+        tcMonthlyApptStart.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStart().format(formatDT)));
+        tcMonthlyApptEnd.setCellValueFactory(cellData ->  new SimpleStringProperty(cellData.getValue().getEnd().format(formatDT)));
+        tvMonthlyAppts.getItems().addAll(getApptsByMonth());
+    }*/
     
     @FXML
     void getNewAppt(ActionEvent event) {
-        
+        Alert addAlert = new Alert(AlertType.CONFIRMATION);
+        addAlert.setTitle("Add Appointment");
+        addAlert.setHeaderText("Are you sure you want to add a new appointment?");
+        addAlert.setContentText("Press OK to add the appointment. \nPress Cancel to cancel the addition.");
+        addAlert.showAndWait();
+        if (addAlert.getResult() == ButtonType.OK) {
+            try {
+                FXMLLoader addApptLoader = new FXMLLoader(AddAppointmentController.class.getResource("AddAppointment.fxml"));
+                Parent addApptScreen = addApptLoader.load();
+                Scene addApptScene = new Scene(addApptScreen);
+                Stage addApptStage = new Stage();
+                addApptStage.setTitle("Add Appointment");
+                addApptStage.setScene(addApptScene);
+                addApptStage.show();
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
     
     @FXML
@@ -172,7 +207,6 @@ public class AppointmentCalendarController implements Initializable {
                     modAlert.showAndWait();
                     if (modAlert.getResult() == ButtonType.OK) {
                         try {
-                            Appointment appt = tvWeeklyAppts.getSelectionModel().getSelectedItem();
                             FXMLLoader modApptLoader = new FXMLLoader(ModifyAppointmentController.class.getResource("ModifyAppointment.fxml"));
                             Parent modApptScreen = modApptLoader.load();
                             Scene modApptScene = new Scene(modApptScreen);
@@ -203,7 +237,6 @@ public class AppointmentCalendarController implements Initializable {
                     modAlert.showAndWait();
                     if (modAlert.getResult() == ButtonType.OK) {
                         try {
-                            Appointment appt = tvWeeklyAppts.getSelectionModel().getSelectedItem();
                             FXMLLoader modApptLoader = new FXMLLoader(ModifyAppointmentController.class.getResource("ModifyAppointment.fxml"));
                             Parent modApptScreen = modApptLoader.load();
                             Scene modApptScene = new Scene(modApptScreen);
@@ -300,13 +333,7 @@ public class AppointmentCalendarController implements Initializable {
         }
     }
     
-    /**
-     * Initializes the controller class.
-     * @param url
-     * @param rb
-     */
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
+    public void getAppointments() {
         tcWeeklyCustName.setCellValueFactory(cellData -> { return cellData.getValue().getCustomer().customerNameProperty(); });
         tcWeeklyApptTitle.setCellValueFactory(cellData -> { return cellData.getValue().titleProperty(); });
         tcWeeklyApptDescription.setCellValueFactory(cellData -> { return cellData.getValue().descriptionProperty(); });
@@ -327,6 +354,16 @@ public class AppointmentCalendarController implements Initializable {
         tcMonthlyApptStart.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStart().format(formatDT)));
         tcMonthlyApptEnd.setCellValueFactory(cellData ->  new SimpleStringProperty(cellData.getValue().getEnd().format(formatDT)));
         tvMonthlyAppts.getItems().addAll(getApptsByMonth());
+    }
+    
+    /**
+     * Initializes the controller class.
+     * @param url
+     * @param rb
+     */
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        getAppointments();
     }
     
 }

@@ -137,7 +137,7 @@ public class DBAppointment {
         return getApptById;
     }
 
-    public Appointment addAppointment(Appointment appointment) {
+    public static Appointment addAppointment(Appointment appointment) {
         String addAppointmentSQL = String.join(" ",
                 "INSERT INTO appointment (customerId, userId, title, "
                             + "description, location, contact, type, url, start, end, "

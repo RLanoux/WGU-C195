@@ -1,6 +1,6 @@
-/**
+/*
  * Desktop Scheduling Application for C195
- * @author Raymond Lanoux <rlanoux@wgu.edu>
+ * @author Raymond Lanoux <rlanoux@wgu.edu>  * 
  */
 package SchedulingApp.View_Controller;
 
@@ -30,10 +30,10 @@ import javafx.util.StringConverter;
 
 /**
  * FXML Controller class
- * This class contains the code that allows appointment records
- * in the MySQL database to be modified.
+ *
+ * @author Raymond
  */
-public class ModifyAppointmentController implements Initializable {
+public class AddAppointmentController implements Initializable {
     
     @FXML
     private Label lblCustomer;
@@ -61,9 +61,6 @@ public class ModifyAppointmentController implements Initializable {
 
     @FXML
     private Label lblEnd;
-
-    @FXML
-    private ComboBox<Customer> cbCustomer;
 
     @FXML
     private TextField txtTitle;
@@ -94,10 +91,13 @@ public class ModifyAppointmentController implements Initializable {
 
     @FXML
     private Button btnExit;
+
+    @FXML
+    private ComboBox<Customer> cbCustomer;
     
     @FXML
     private final DateTimeFormatter formatDT = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss a z");
-    
+
     @FXML
     void getExitAction(ActionEvent eExitAction) {
         Alert exitAlert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -116,57 +116,30 @@ public class ModifyAppointmentController implements Initializable {
 
     @FXML
     void getSaveAction(ActionEvent eSaveAction) {
-        Alert saveAlert = new Alert(Alert.AlertType.CONFIRMATION);
-        saveAlert.setTitle("Save Appointment Modifications");
-        saveAlert.setHeaderText("Are you sure you want to save?");
-        saveAlert.setContentText("Press OK to save the modifications. \nPress Cancel to stay on this screen.");
-        saveAlert.showAndWait();
-        if (saveAlert.getResult() == ButtonType.OK) {
-            convertCustomerString();
-            System.out.println(selectedAppt.getCustomer().getCustomerName() + " " + selectedAppt.getCustomerId());
-            System.out.println(cbCustomer.getValue().getCustomerName() + " " + cbCustomer.getValue().getCustomerId());
-            Stage winExitScreen = (Stage)((Node)eSaveAction.getSource()).getScene().getWindow();
-            winExitScreen.close();
+        if (cbCustomer.getValue() == null) {
+            Alert nullAlert = new Alert(Alert.AlertType.ERROR);
+            nullAlert.setTitle("Appointment Additon Error");
+            nullAlert.setHeaderText("The appointment is not able to be added!");
+            nullAlert.setContentText("There was no customer selected!");
+            nullAlert.showAndWait();
         }
         else {
-            saveAlert.close();
+            Alert saveAlert = new Alert(Alert.AlertType.CONFIRMATION);
+            saveAlert.setTitle("Save Appointment Modifications");
+            saveAlert.setHeaderText("Are you sure you want to save?");
+            saveAlert.setContentText("Press OK to save the modifications. \nPress Cancel to stay on this screen.");
+            saveAlert.showAndWait();
+            if (saveAlert.getResult() == ButtonType.OK) {
+                Stage winExitScreen = (Stage)((Node)eSaveAction.getSource()).getScene().getWindow();
+                winExitScreen.close();
+            }
+            else {
+                saveAlert.close();
+            }
         }
     }
     
-    private ObservableList<Customer> activeCusts = DBCustomer.getActiveCustomers();
-    
-    public Customer getActiveCustomers() {
-        cbCustomer.setItems(activeCusts);
-        return null;
-    }
-    
-    public void convertCustomerString() {
-            cbCustomer.setConverter(new StringConverter<Customer>() {
-            @Override
-            public String toString(Customer cust) {
-                return cust.getCustomerName();
-            }
-
-            @Override
-            public Customer fromString(String string) {
-                return cbCustomer.getValue();
-            }
-        });
-    }
-    
-    public void setSelectedApptInfo() {
-        cbCustomer.getSelectionModel().select(selectedAppt.getCustomer());
-        txtTitle.setText(selectedAppt.getTitle());
-        txtDescription.setText(selectedAppt.getDescription());
-        txtLocation.setText(selectedAppt.getLocation());
-        txtContact.setText(selectedAppt.getContact());
-        txtType.setText(selectedAppt.getType());
-        txtUrl.setText(selectedAppt.getUrl());
-        txtStart.setText(selectedAppt.getStart().format(formatDT));
-        txtEnd.setText(selectedAppt.getEnd().format(formatDT));
-    }
-    
-    public void updateApptInfo() {
+    public void getApptInfo() {
         Appointment appt = new Appointment();
         appt.setCustomerId(cbCustomer.getValue().getCustomerId());
         appt.setUserId(loggedUser.getUserId());
@@ -179,19 +152,37 @@ public class ModifyAppointmentController implements Initializable {
         appt.setStart(ZonedDateTime.parse(txtStart.getText(), formatDT));
         appt.setEnd(ZonedDateTime.parse(txtEnd.getText(), formatDT));
         appt.setAppointmentId(selectedAppt.getAppointmentId());
-        DBAppointment.updateAppointment(appt);
+        DBAppointment.addAppointment(appt);
+    }
+    
+    public Customer getActiveCustomers() {
+        ObservableList<Customer> activeCusts = DBCustomer.getActiveCustomers();
+        cbCustomer.setItems(activeCusts);
+        cbCustomer.setPromptText("Select a customer:");
+        return null;
+    }
+    
+    public void convertCustomerString() {
+        cbCustomer.setConverter(new StringConverter<Customer>() {
+            @Override
+            public String toString(Customer cust) {
+                return cust.getCustomerName();
+            }
+
+            @Override
+            public Customer fromString(String string) {
+                return cbCustomer.getValue();
+            }
+        });
     }
 
     /**
      * Initializes the controller class.
-     * @param url
-     * @param rb
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        setSelectedApptInfo();
         getActiveCustomers();
         convertCustomerString();
-    }
+    }    
     
 }

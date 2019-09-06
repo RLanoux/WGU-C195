@@ -135,13 +135,10 @@
                         <Font size="14.0" />
                      </font>
                   </Button>
-                  <ComboBox fx:id="cbCustomer" prefHeight="25.0" prefWidth="200.0" GridPane.columnIndex="1">
-                     <opaqueInsets>
-                        <Insets />
-                     </opaqueInsets>
-                     <GridPane.margin>
+                  <ComboBox fx:id="cbCustomer" prefWidth="190.0" GridPane.columnIndex="1">
+                     <padding>
                         <Insets right="10.0" />
-                     </GridPane.margin>
+                     </padding>
                   </ComboBox>
                </children>
             </GridPane>
