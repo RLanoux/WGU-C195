@@ -8,13 +8,13 @@ import SchedulingApp.DAO.DBAppointment;
 import static SchedulingApp.DAO.DBAppointment.getApptsByMonth;
 import static SchedulingApp.DAO.DBAppointment.getApptsByWeek;
 import SchedulingApp.Model.Appointment;
+import SchedulingApp.Model.Customer;
 import java.io.IOException;
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -214,6 +214,8 @@ public class AppointmentCalendarController implements Initializable {
                             modApptStage.setTitle("Modify Appointment");
                             modApptStage.setScene(modApptScene);
                             modApptStage.show();
+                            Stage apptCalStage = (Stage) btnModifyAppt.getScene().getWindow();
+                            apptCalStage.close();
                         }
                         catch (IOException e) {
                         }
@@ -222,6 +224,7 @@ public class AppointmentCalendarController implements Initializable {
             }
         else if (tpMonthlyAppts.isSelected()) {
             selectedAppt = tvMonthlyAppts.getSelectionModel().getSelectedItem();
+            //selectedAppt.setCustomer(tvMonthlyAppts.getSelectionModel().getSelectedItem().getCustomer());
             if (selectedAppt == null) {
                 Alert nullAlert = new Alert(AlertType.ERROR);
                 nullAlert.setTitle("Appointment Modification Error");
@@ -343,7 +346,7 @@ public class AppointmentCalendarController implements Initializable {
         tcWeeklyApptURL.setCellValueFactory(cellData -> { return cellData.getValue().urlProperty(); });
         tcWeeklyApptStart.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStart().format(formatDT)));
         tcWeeklyApptEnd.setCellValueFactory(cellData ->  new SimpleStringProperty(cellData.getValue().getEnd().format(formatDT)));
-        tvWeeklyAppts.getItems().addAll(getApptsByWeek());
+        tvWeeklyAppts.setItems(getApptsByWeek());
         tcMonthlyCustName.setCellValueFactory(cellData -> { return cellData.getValue().getCustomer().customerNameProperty(); });
         tcMonthlyApptTitle.setCellValueFactory(cellData -> { return cellData.getValue().titleProperty(); });
         tcMonthlyApptDescription.setCellValueFactory(cellData -> { return cellData.getValue().descriptionProperty(); });
@@ -353,7 +356,7 @@ public class AppointmentCalendarController implements Initializable {
         tcMonthlyApptURL.setCellValueFactory(cellData -> { return cellData.getValue().urlProperty(); });
         tcMonthlyApptStart.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStart().format(formatDT)));
         tcMonthlyApptEnd.setCellValueFactory(cellData ->  new SimpleStringProperty(cellData.getValue().getEnd().format(formatDT)));
-        tvMonthlyAppts.getItems().addAll(getApptsByMonth());
+        tvMonthlyAppts.setItems(getApptsByMonth());
     }
     
     /**

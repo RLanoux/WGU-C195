@@ -6,6 +6,7 @@ package SchedulingApp.DAO;
 
 import static SchedulingApp.DAO.DBConnector.DB_CONN;
 import SchedulingApp.Model.Appointment;
+import SchedulingApp.Model.Customer;
 import static SchedulingApp.View_Controller.LoginScreenController.loggedUser;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -27,7 +28,7 @@ public class DBAppointment {
     
     public static ObservableList<Appointment> getApptsByWeek() {
         ObservableList<Appointment> apptsByWeek = FXCollections.observableArrayList();
-        String getApptsByWeekSQL = "SELECT customer.customerName, appointment.* FROM customer "
+        String getApptsByWeekSQL = "SELECT customer.customerId, customer.customerName, appointment.* FROM customer "
                 + "RIGHT JOIN appointment ON customer.customerId = appointment.customerId "
                 + "WHERE start BETWEEN NOW() AND (SELECT ADDDATE(NOW(), INTERVAL 7 DAY))";
         
@@ -36,8 +37,11 @@ public class DBAppointment {
             ResultSet rs = stmt.executeQuery();
             
             while (rs.next()) {
+                Customer selectedCust = new Customer();
+                selectedCust.setCustomerId(rs.getInt("customerId"));
+                selectedCust.setCustomerName(rs.getString("customerName"));
                 Appointment getWeeklyAppts = new Appointment();
-                getWeeklyAppts.getCustomer().setCustomerName(rs.getString("customerName"));
+                getWeeklyAppts.setCustomer(selectedCust);
                 getWeeklyAppts.setAppointmentId(rs.getInt("appointmentId"));
                 getWeeklyAppts.setCustomerId(rs.getInt("customerId"));
                 getWeeklyAppts.setUserId(rs.getInt("userId"));
@@ -65,7 +69,7 @@ public class DBAppointment {
     }
     public static ObservableList<Appointment> getApptsByMonth() {
         ObservableList<Appointment> apptsByMonth = FXCollections.observableArrayList();
-        String getApptsByMonthSQL = "SELECT customer.customerName, appointment.* FROM customer "
+        String getApptsByMonthSQL = "SELECT customer.customerId, customer.customerName, appointment.* FROM customer "
                 + "RIGHT JOIN appointment ON customer.customerId = appointment.customerId "
                 + "WHERE start BETWEEN NOW() AND (SELECT LAST_DAY(NOW()))";
         
@@ -74,8 +78,11 @@ public class DBAppointment {
             ResultSet rs = stmt.executeQuery();
             
             while (rs.next()) {
+                Customer selectedCust = new Customer();
+                selectedCust.setCustomerId(rs.getInt("customerId"));
+                selectedCust.setCustomerName(rs.getString("customerName"));
                 Appointment getMonthlyAppts = new Appointment();
-                getMonthlyAppts.getCustomer().setCustomerName(rs.getString("customerName"));
+                getMonthlyAppts.setCustomer(selectedCust);
                 getMonthlyAppts.setAppointmentId(rs.getInt("appointmentId"));
                 getMonthlyAppts.setCustomerId(rs.getInt("customerId"));
                 getMonthlyAppts.setUserId(rs.getInt("userId"));
@@ -102,7 +109,7 @@ public class DBAppointment {
         return apptsByMonth;
     }
     public Appointment getApptById(int appointmentId) {
-        String getApptByIdSQL = "SELECT customer.customerName, appointment.* FROM customer "
+        String getApptByIdSQL = "SELECT customer.customerId, customer.customerName, appointment.* FROM customer "
                 + "RIGHT JOIN appointment ON customer.customerId = appointment.customerId " 
                 +"WHERE appointmentId = ?";
         Appointment getApptById = new Appointment();
@@ -112,7 +119,10 @@ public class DBAppointment {
             ResultSet rs = stmt.executeQuery();
             
             if (rs.next()) {
-                getApptById.getCustomer().setCustomerName(rs.getString("customerName"));
+                Customer selectedCust = new Customer();
+                selectedCust.setCustomerId(rs.getInt("customerId"));
+                selectedCust.setCustomerName(rs.getString("customerName"));
+                getApptById.setCustomer(selectedCust);
                 getApptById.setCustomerId(rs.getInt("customerId"));
                 getApptById.setUserId(rs.getInt("userId"));
                 getApptById.setTitle(rs.getString("title"));

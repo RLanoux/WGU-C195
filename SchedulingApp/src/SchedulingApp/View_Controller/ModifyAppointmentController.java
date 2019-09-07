@@ -10,6 +10,7 @@ import SchedulingApp.Model.Appointment;
 import SchedulingApp.Model.Customer;
 import static SchedulingApp.View_Controller.AppointmentCalendarController.selectedAppt;
 import static SchedulingApp.View_Controller.LoginScreenController.loggedUser;
+import java.io.IOException;
 import java.net.URL;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -17,8 +18,11 @@ import java.util.ResourceBundle;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -106,8 +110,19 @@ public class ModifyAppointmentController implements Initializable {
         exitAlert.setContentText("Press OK to exit the program. \nPress Cancel to stay on this screen.");
         exitAlert.showAndWait();
         if (exitAlert.getResult() == ButtonType.OK) {
-            Stage winMainScreen = (Stage)((Node)eExitAction.getSource()).getScene().getWindow();
-            winMainScreen.close();
+            try {
+                FXMLLoader apptCalLoader = new FXMLLoader(AppointmentCalendarController.class.getResource("AppointmentCalendar.fxml"));
+                Parent apptCalScreen = apptCalLoader.load();
+                Scene apptCalScene = new Scene(apptCalScreen);
+                Stage apptCalStage = new Stage();
+                apptCalStage.setTitle("Appointment Calendar");
+                apptCalStage.setScene(apptCalScene);
+                apptCalStage.show();
+                Stage modApptStage = (Stage) btnExit.getScene().getWindow();
+                modApptStage.close();
+            }
+            catch (IOException e) {
+            }
         }
         else {
             exitAlert.close();
@@ -122,11 +137,20 @@ public class ModifyAppointmentController implements Initializable {
         saveAlert.setContentText("Press OK to save the modifications. \nPress Cancel to stay on this screen.");
         saveAlert.showAndWait();
         if (saveAlert.getResult() == ButtonType.OK) {
-            convertCustomerString();
-            System.out.println(selectedAppt.getCustomer().getCustomerName() + " " + selectedAppt.getCustomerId());
-            System.out.println(cbCustomer.getValue().getCustomerName() + " " + cbCustomer.getValue().getCustomerId());
-            Stage winExitScreen = (Stage)((Node)eSaveAction.getSource()).getScene().getWindow();
-            winExitScreen.close();
+            updateApptInfo();
+            try {
+                FXMLLoader apptCalLoader = new FXMLLoader(AppointmentCalendarController.class.getResource("AppointmentCalendar.fxml"));
+                Parent apptCalScreen = apptCalLoader.load();
+                Scene apptCalScene = new Scene(apptCalScreen);
+                Stage apptCalStage = new Stage();
+                apptCalStage.setTitle("Appointment Calendar");
+                apptCalStage.setScene(apptCalScene);
+                apptCalStage.show();
+                Stage modApptStage = (Stage) btnSave.getScene().getWindow();
+                modApptStage.close();
+            }
+            catch (IOException e) {
+            }
         }
         else {
             saveAlert.close();
@@ -135,13 +159,12 @@ public class ModifyAppointmentController implements Initializable {
     
     private ObservableList<Customer> activeCusts = DBCustomer.getActiveCustomers();
     
-    public Customer getActiveCustomers() {
+    public void getActiveCustomers() {
         cbCustomer.setItems(activeCusts);
-        return null;
     }
     
     public void convertCustomerString() {
-            cbCustomer.setConverter(new StringConverter<Customer>() {
+        cbCustomer.setConverter(new StringConverter<Customer>() {
             @Override
             public String toString(Customer cust) {
                 return cust.getCustomerName();
@@ -155,7 +178,7 @@ public class ModifyAppointmentController implements Initializable {
     }
     
     public void setSelectedApptInfo() {
-        cbCustomer.getSelectionModel().select(selectedAppt.getCustomer());
+        cbCustomer.setValue(selectedAppt.getCustomer());
         txtTitle.setText(selectedAppt.getTitle());
         txtDescription.setText(selectedAppt.getDescription());
         txtLocation.setText(selectedAppt.getLocation());
@@ -189,8 +212,8 @@ public class ModifyAppointmentController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        setSelectedApptInfo();
         getActiveCustomers();
+        setSelectedApptInfo();
         convertCustomerString();
     }
     
