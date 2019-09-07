@@ -116,18 +116,26 @@ public class AddAppointmentController implements Initializable {
 
     @FXML
     void getSaveAction(ActionEvent eSaveAction) {
-        if (cbCustomer.getValue() == null) {
-            Alert nullAlert = new Alert(Alert.AlertType.ERROR);
-            nullAlert.setTitle("Appointment Additon Error");
-            nullAlert.setHeaderText("The appointment is not able to be added!");
-            nullAlert.setContentText("There was no customer selected!");
-            nullAlert.showAndWait();
+        if (isInputEmpty() == true || isInputValid() == false) {
+            Alert emptyAlert = new Alert(Alert.AlertType.ERROR);
+            emptyAlert.setTitle("Invalid Appointment Addition");
+            emptyAlert.setHeaderText("The appointment is not able to be added!");
+            emptyAlert.setContentText(emptyInput);
+            emptyAlert.showAndWait();
+            emptyInput = "";
+            
+            Alert invalidAlert = new Alert(Alert.AlertType.ERROR);
+            invalidAlert.setTitle("Invalid Appointment Addition");
+            invalidAlert.setHeaderText("The appointment is not able to be added!");
+            invalidAlert.setContentText(invalidInput);
+            invalidAlert.showAndWait();
+            invalidInput = "";
         }
-        else {
+        if (isInputValid()) {
             Alert saveAlert = new Alert(Alert.AlertType.CONFIRMATION);
             saveAlert.setTitle("Save Appointment Modifications");
             saveAlert.setHeaderText("Are you sure you want to save?");
-            saveAlert.setContentText("Press OK to save the modifications. \nPress Cancel to stay on this screen.");
+            saveAlert.setContentText("Press OK to save the addition. \nPress Cancel to stay on this screen.");
             saveAlert.showAndWait();
             if (saveAlert.getResult() == ButtonType.OK) {
                 Stage winExitScreen = (Stage)((Node)eSaveAction.getSource()).getScene().getWindow();
@@ -174,6 +182,68 @@ public class AddAppointmentController implements Initializable {
                 return cbCustomer.getValue();
             }
         });
+    }
+    
+    private String emptyInput = new String();
+    
+    private boolean isInputEmpty() {
+        boolean bEmpty = true;
+        if (cbCustomer.getValue() == null) {
+            bEmpty=true;
+            emptyInput += "There was no customer selected!";
+        }
+        if (txtTitle.getText().isEmpty()) {
+            bEmpty=true;
+            emptyInput += "\nThe title cannot be empty!";
+        }
+        if (txtDescription.getText().isEmpty()) {
+            bEmpty=true;
+            emptyInput += "\nThe description cannot be empty!";
+        }
+        if (txtLocation.getText().isEmpty()) {
+            bEmpty=true;
+            emptyInput += "\nThe location cannot be empty!";
+        }
+        if (txtContact.getText().isEmpty()) {
+            bEmpty=true;
+            emptyInput += "\nThe contact cannot be empty!";
+        }
+        if (txtType.getText().isEmpty()) {
+            bEmpty=true;
+            emptyInput += "\nThe type cannot be empty!";
+        }
+        if (txtUrl.getText().isEmpty()) {
+            bEmpty=true;
+            emptyInput += "\nThe url cannot be empty!";
+        }
+        if (txtStart.getText().isEmpty()) {
+            bEmpty=true;
+            emptyInput += "\nThe start cannot be empty!";
+        }
+        if (txtEnd.getText().isEmpty()) {
+            bEmpty=true;
+            emptyInput += "\nThe end cannot be empty!";
+        }
+        return bEmpty;
+    }
+    
+    private String invalidInput = new String();
+    
+    private boolean isInputValid() {
+        boolean bValid = false;
+        if (cbCustomer.getValue() != null) {
+            bValid=true;
+        }
+        if (!(txtTitle.getText().isEmpty())) {
+           if (!(txtTitle.getText().matches("[a-zA-Z]"))) {
+                bValid=false;
+                invalidInput += "\nThe title can only contain letters!";
+            }
+           else {
+               bValid=true;
+           }
+        }
+        return bValid;
     }
 
     /**
