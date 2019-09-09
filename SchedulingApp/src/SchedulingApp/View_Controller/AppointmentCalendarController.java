@@ -135,35 +135,8 @@ public class AppointmentCalendarController implements Initializable {
     @FXML
     private final DateTimeFormatter formatDT = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm a z");
     
-    public static Appointment selectedAppt;
-    
-    /*@FXML
-    public void getWeeklyAppts() {
-        tcWeeklyCustName.setCellValueFactory(cellData -> { return cellData.getValue().getCustomer().customerNameProperty(); });
-        tcWeeklyApptTitle.setCellValueFactory(cellData -> { return cellData.getValue().titleProperty(); });
-        tcWeeklyApptDescription.setCellValueFactory(cellData -> { return cellData.getValue().descriptionProperty(); });
-        tcWeeklyApptLocation.setCellValueFactory(cellData -> { return cellData.getValue().locationProperty(); });
-        tcWeeklyApptContact.setCellValueFactory(cellData -> { return cellData.getValue().contactProperty(); });
-        tcWeeklyApptType.setCellValueFactory(cellData -> { return cellData.getValue().typeProperty(); });
-        tcWeeklyApptURL.setCellValueFactory(cellData -> { return cellData.getValue().urlProperty(); });
-        tcWeeklyApptStart.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStart().format(formatDT)));
-        tcWeeklyApptEnd.setCellValueFactory(cellData ->  new SimpleStringProperty(cellData.getValue().getEnd().format(formatDT)));
-        tvWeeklyAppts.getItems().addAll(getApptsByWeek());
-    }
-    
     @FXML
-    public void getMonthlyAppts() {
-        tcMonthlyCustName.setCellValueFactory(cellData -> { return cellData.getValue().getCustomer().customerNameProperty(); });
-        tcMonthlyApptTitle.setCellValueFactory(cellData -> { return cellData.getValue().titleProperty(); });
-        tcMonthlyApptDescription.setCellValueFactory(cellData -> { return cellData.getValue().descriptionProperty(); });
-        tcMonthlyApptLocation.setCellValueFactory(cellData -> { return cellData.getValue().locationProperty(); });
-        tcMonthlyApptContact.setCellValueFactory(cellData -> { return cellData.getValue().contactProperty(); });
-        tcMonthlyApptType.setCellValueFactory(cellData -> { return cellData.getValue().typeProperty(); });
-        tcMonthlyApptURL.setCellValueFactory(cellData -> { return cellData.getValue().urlProperty(); });
-        tcMonthlyApptStart.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStart().format(formatDT)));
-        tcMonthlyApptEnd.setCellValueFactory(cellData ->  new SimpleStringProperty(cellData.getValue().getEnd().format(formatDT)));
-        tvMonthlyAppts.getItems().addAll(getApptsByMonth());
-    }*/
+    public static Appointment selectedAppt;
     
     @FXML
     void getNewAppt(ActionEvent event) {
@@ -180,7 +153,10 @@ public class AppointmentCalendarController implements Initializable {
                 Stage addApptStage = new Stage();
                 addApptStage.setTitle("Add Appointment");
                 addApptStage.setScene(addApptScene);
+                addApptStage.setResizable(false);
                 addApptStage.show();
+                Stage apptCalStage = (Stage) btnNewAppt.getScene().getWindow();
+                apptCalStage.close();
             }
             catch (IOException e) {
                 e.printStackTrace();
@@ -213,18 +189,19 @@ public class AppointmentCalendarController implements Initializable {
                             Stage modApptStage = new Stage();
                             modApptStage.setTitle("Modify Appointment");
                             modApptStage.setScene(modApptScene);
+                            modApptStage.setResizable(false);
                             modApptStage.show();
                             Stage apptCalStage = (Stage) btnModifyAppt.getScene().getWindow();
                             apptCalStage.close();
                         }
                         catch (IOException e) {
+                            e.printStackTrace();
                         }
                     }
                 }
             }
         else if (tpMonthlyAppts.isSelected()) {
             selectedAppt = tvMonthlyAppts.getSelectionModel().getSelectedItem();
-            //selectedAppt.setCustomer(tvMonthlyAppts.getSelectionModel().getSelectedItem().getCustomer());
             if (selectedAppt == null) {
                 Alert nullAlert = new Alert(AlertType.ERROR);
                 nullAlert.setTitle("Appointment Modification Error");
@@ -246,9 +223,13 @@ public class AppointmentCalendarController implements Initializable {
                             Stage modApptStage = new Stage();
                             modApptStage.setTitle("Modify Appointment");
                             modApptStage.setScene(modApptScene);
+                            modApptStage.setResizable(false);
                             modApptStage.show();
+                            Stage apptCalStage = (Stage) btnModifyAppt.getScene().getWindow();
+                            apptCalStage.close();
                         }
                         catch (IOException e) {
+                            e.printStackTrace();
                         }
                     }
                 }
@@ -267,6 +248,7 @@ public class AppointmentCalendarController implements Initializable {
                 try {
                     Appointment appt = tvWeeklyAppts.getSelectionModel().getSelectedItem();
                     DBAppointment.deleteAppointment(appt);
+                    getAppointments();
                 }
                 catch (NullPointerException e) {
                     Alert nullAlert = new Alert(AlertType.ERROR);
@@ -287,7 +269,18 @@ public class AppointmentCalendarController implements Initializable {
             delAlert.setContentText("Press OK to delete the appointment. \nPress Cancel to cancel the deletion.");
             delAlert.showAndWait();
             if (delAlert.getResult() == ButtonType.OK) {
-                selectedAppt = tvMonthlyAppts.getSelectionModel().getSelectedItem();
+                try {
+                    Appointment appt = tvMonthlyAppts.getSelectionModel().getSelectedItem();
+                    DBAppointment.deleteAppointment(appt);
+                    getAppointments();
+                }
+                catch (NullPointerException e) {
+                    Alert nullAlert = new Alert(AlertType.ERROR);
+                    nullAlert.setTitle("Appointment Modification Error");
+                    nullAlert.setHeaderText("The appointment is not able to be deleted!");
+                    nullAlert.setContentText("There was no appointment selected!");
+                    nullAlert.showAndWait();
+                }
             }
             else {
                 delAlert.close();

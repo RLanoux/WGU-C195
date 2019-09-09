@@ -12,6 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -104,10 +105,11 @@ public class DBAppointment {
             }
         }
         catch (SQLException e) {
-            e.getMessage();
+            e.printStackTrace();
         }
         return apptsByMonth;
     }
+    
     public Appointment getApptById(int appointmentId) {
         String getApptByIdSQL = "SELECT customer.customerId, customer.customerName, appointment.* FROM customer "
                 + "RIGHT JOIN appointment ON customer.customerId = appointment.customerId " 
@@ -152,7 +154,7 @@ public class DBAppointment {
                 "INSERT INTO appointment (customerId, userId, title, "
                             + "description, location, contact, type, url, start, end, "
                             + "createDate, createdBy, lastUpdate, lastUpdateBy) ",
-                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?, NOW(), ?)");
+                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         
         try {
             PreparedStatement stmt = DB_CONN.prepareStatement(addAppointmentSQL);
@@ -165,16 +167,24 @@ public class DBAppointment {
             stmt.setObject(7, appointment.getType());
             stmt.setObject(8, appointment.getUrl());
             
-            LocalDateTime startUTC = appointment.getStart().toLocalDateTime();
-            LocalDateTime endUTC = appointment.getEnd().toLocalDateTime();
-            stmt.setTimestamp(9, Timestamp.valueOf(startUTC));
-            stmt.setTimestamp(10, Timestamp.valueOf(endUTC));
+            ZonedDateTime startZDT = appointment.getStart().withZoneSameInstant(ZoneId.of("UTC"));
+            ZonedDateTime endZDT = appointment.getEnd().withZoneSameInstant(ZoneId.of("UTC"));
+            stmt.setTimestamp(9, Timestamp.valueOf(startZDT.toLocalDateTime()));
+            stmt.setTimestamp(10, Timestamp.valueOf(endZDT.toLocalDateTime()));
             
-            stmt.setString(11, loggedUser.getUserName());
+            ZonedDateTime createZDT = ZonedDateTime.now().withZoneSameInstant(ZoneId.of("UTC"));
+            stmt.setTimestamp(11, Timestamp.valueOf(createZDT.toLocalDateTime()));
+            
             stmt.setString(12, loggedUser.getUserName());
+            
+            ZonedDateTime updateZDT = ZonedDateTime.now().withZoneSameInstant(ZoneId.of("UTC"));
+            stmt.setTimestamp(13, Timestamp.valueOf(updateZDT.toLocalDateTime()));
+            
+            stmt.setString(14, loggedUser.getUserName());
             stmt.executeUpdate();
         }
         catch (SQLException e){
+            e.printStackTrace();
         }
         return appointment;
     }
@@ -182,7 +192,7 @@ public class DBAppointment {
         String updateApptSQL = String.join(" ",
                 "UPDATE appointment",
                 "SET customerId=?, userId=?, title=?, description=?, location=?," +
-                "contact=?, type=?, url=?, start=?, end=?, lastUpdate=NOW(), lastUpdateBy=?",
+                "contact=?, type=?, url=?, start=?, end=?, lastUpdate=?, lastUpdateBy=?",
                 "WHERE appointmentId=?");
         
         try {
@@ -195,16 +205,21 @@ public class DBAppointment {
             stmt.setObject(6, appointment.getContact());
             stmt.setObject(7, appointment.getType());
             stmt.setObject(8, appointment.getUrl());
-            LocalDateTime startUTC = appointment.getStart().toLocalDateTime();
-            LocalDateTime endUTC = appointment.getEnd().toLocalDateTime();
-            stmt.setTimestamp(9, Timestamp.valueOf(startUTC));
-            stmt.setTimestamp(10, Timestamp.valueOf(endUTC));
             
-            stmt.setString(11, loggedUser.getUserName());
-            stmt.setObject(12, appointment.getAppointmentId());
+            ZonedDateTime startZDT = appointment.getStart().withZoneSameInstant(ZoneId.of("UTC"));
+            ZonedDateTime endZDT = appointment.getEnd().withZoneSameInstant(ZoneId.of("UTC"));
+            stmt.setTimestamp(9, Timestamp.valueOf(startZDT.toLocalDateTime()));
+            stmt.setTimestamp(10, Timestamp.valueOf(endZDT.toLocalDateTime()));
+            
+            ZonedDateTime updateZDT = ZonedDateTime.now().withZoneSameInstant(ZoneId.of("UTC"));
+            stmt.setTimestamp(11, Timestamp.valueOf(updateZDT.toLocalDateTime()));
+            
+            stmt.setString(12, loggedUser.getUserName());
+            stmt.setObject(13, appointment.getAppointmentId());
             stmt.executeUpdate();
         }
         catch (SQLException e) {
+            e.printStackTrace();
         }
     }
     public static void deleteAppointment(Appointment appointment) {
@@ -216,6 +231,7 @@ public class DBAppointment {
             stmt.executeUpdate();
         }
         catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }

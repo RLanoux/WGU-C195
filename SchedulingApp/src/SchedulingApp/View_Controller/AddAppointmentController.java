@@ -6,27 +6,39 @@ package SchedulingApp.View_Controller;
 
 import SchedulingApp.DAO.DBAppointment;
 import SchedulingApp.DAO.DBCustomer;
+import SchedulingApp.Exceptions.AppointmentException;
 import SchedulingApp.Model.Appointment;
 import SchedulingApp.Model.Customer;
 import static SchedulingApp.View_Controller.AppointmentCalendarController.selectedAppt;
 import static SchedulingApp.View_Controller.LoginScreenController.loggedUser;
+import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
+import javafx.util.converter.LocalTimeStringConverter;
 
 /**
  * FXML Controller class
@@ -81,12 +93,6 @@ public class AddAppointmentController implements Initializable {
     private TextField txtUrl;
 
     @FXML
-    private TextField txtStart;
-
-    @FXML
-    private TextField txtEnd;
-
-    @FXML
     private Button btnSave;
 
     @FXML
@@ -96,7 +102,28 @@ public class AddAppointmentController implements Initializable {
     private ComboBox<Customer> cbCustomer;
     
     @FXML
-    private final DateTimeFormatter formatDT = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss a z");
+    private DatePicker dpStartDate;
+
+    @FXML
+    private DatePicker dpEndDate;
+
+    @FXML
+    private Spinner<LocalTime> spStartTime;
+
+    @FXML
+    private Spinner<LocalTime> spEndTime;
+    
+    @FXML
+    private Appointment appt = new Appointment();
+    
+    @FXML
+    private final DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    
+    @FXML
+    private final DateTimeFormatter formatTime = DateTimeFormatter.ofPattern("HH:mm");
+    
+    @FXML
+    private static ZoneId zId = ZoneId.systemDefault();
 
     @FXML
     void getExitAction(ActionEvent eExitAction) {
@@ -106,8 +133,20 @@ public class AddAppointmentController implements Initializable {
         exitAlert.setContentText("Press OK to exit the program. \nPress Cancel to stay on this screen.");
         exitAlert.showAndWait();
         if (exitAlert.getResult() == ButtonType.OK) {
-            Stage winMainScreen = (Stage)((Node)eExitAction.getSource()).getScene().getWindow();
-            winMainScreen.close();
+            try {
+                FXMLLoader apptCalLoader = new FXMLLoader(AppointmentCalendarController.class.getResource("AppointmentCalendar.fxml"));
+                Parent apptCalScreen = apptCalLoader.load();
+                Scene apptCalScene = new Scene(apptCalScreen);
+                Stage apptCalStage = new Stage();
+                apptCalStage.setTitle("Appointment Calendar");
+                apptCalStage.setScene(apptCalScene);
+                apptCalStage.show();
+                Stage addApptStage = (Stage) btnExit.getScene().getWindow();
+                addApptStage.close();
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         else {
             exitAlert.close();
@@ -115,40 +154,44 @@ public class AddAppointmentController implements Initializable {
     }
 
     @FXML
-    void getSaveAction(ActionEvent eSaveAction) {
-        if (isInputEmpty() == true || isInputValid() == false) {
-            Alert emptyAlert = new Alert(Alert.AlertType.ERROR);
-            emptyAlert.setTitle("Invalid Appointment Addition");
-            emptyAlert.setHeaderText("The appointment is not able to be added!");
-            emptyAlert.setContentText(emptyInput);
-            emptyAlert.showAndWait();
-            emptyInput = "";
-            
-            Alert invalidAlert = new Alert(Alert.AlertType.ERROR);
-            invalidAlert.setTitle("Invalid Appointment Addition");
-            invalidAlert.setHeaderText("The appointment is not able to be added!");
-            invalidAlert.setContentText(invalidInput);
-            invalidAlert.showAndWait();
-            invalidInput = "";
+    void getSaveAction(ActionEvent eSaveAction) throws Exception {
+        Alert saveAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        saveAlert.setTitle("Save Appointment Modifications");
+        saveAlert.setHeaderText("Are you sure you want to save?");
+        saveAlert.setContentText("Press OK to save the addition. \nPress Cancel to stay on this screen.");
+        saveAlert.showAndWait();
+        if (saveAlert.getResult() == ButtonType.OK) {
+            try {
+                getApptInfo();
+                appt.isValidInput();
+                if (appt.isValidInput()) {
+                    DBAppointment.addAppointment(appt);
+                    FXMLLoader apptCalLoader = new FXMLLoader(AppointmentCalendarController.class.getResource("AppointmentCalendar.fxml"));
+                    Parent apptCalScreen = apptCalLoader.load();
+                    Scene apptCalScene = new Scene(apptCalScreen);
+                    Stage apptCalStage = new Stage();
+                    apptCalStage.setTitle("Appointment Calendar");
+                    apptCalStage.setScene(apptCalScene);
+                    apptCalStage.show();
+                    Stage addApptStage = (Stage) btnSave.getScene().getWindow();
+                    addApptStage.close();
+                }
+            }
+            catch (AppointmentException e) {
+                Alert exAlert = new Alert(Alert.AlertType.ERROR);
+                exAlert.setTitle("Exception");
+                exAlert.setHeaderText("There was an exception!");
+                exAlert.setContentText(e.getMessage());
+                exAlert.showAndWait().filter(response -> response == ButtonType.OK);
+            }
         }
-        if (isInputValid()) {
-            Alert saveAlert = new Alert(Alert.AlertType.CONFIRMATION);
-            saveAlert.setTitle("Save Appointment Modifications");
-            saveAlert.setHeaderText("Are you sure you want to save?");
-            saveAlert.setContentText("Press OK to save the addition. \nPress Cancel to stay on this screen.");
-            saveAlert.showAndWait();
-            if (saveAlert.getResult() == ButtonType.OK) {
-                Stage winExitScreen = (Stage)((Node)eSaveAction.getSource()).getScene().getWindow();
-                winExitScreen.close();
-            }
-            else {
-                saveAlert.close();
-            }
+        else {
+            saveAlert.close();
         }
     }
     
-    public void getApptInfo() {
-        Appointment appt = new Appointment();
+    public void getApptInfo() throws AppointmentException {
+        appt.setCustomer(cbCustomer.getValue());
         appt.setCustomerId(cbCustomer.getValue().getCustomerId());
         appt.setUserId(loggedUser.getUserId());
         appt.setTitle(txtTitle.getText());
@@ -157,17 +200,14 @@ public class AddAppointmentController implements Initializable {
         appt.setContact(txtContact.getText());
         appt.setType(txtType.getText());
         appt.setUrl(txtUrl.getText());
-        appt.setStart(ZonedDateTime.parse(txtStart.getText(), formatDT));
-        appt.setEnd(ZonedDateTime.parse(txtEnd.getText(), formatDT));
-        appt.setAppointmentId(selectedAppt.getAppointmentId());
-        DBAppointment.addAppointment(appt);
+        appt.setStart(ZonedDateTime.of(LocalDate.parse(dpStartDate.getValue().toString(), formatDate), LocalTime.parse(spStartTime.getValue().toString(), formatTime), zId));
+        appt.setEnd(ZonedDateTime.of(LocalDate.parse(dpEndDate.getValue().toString(), formatDate), LocalTime.parse(spEndTime.getValue().toString(), formatTime), zId));
     }
     
-    public Customer getActiveCustomers() {
+    public void getActiveCustomers() {
         ObservableList<Customer> activeCusts = DBCustomer.getActiveCustomers();
         cbCustomer.setItems(activeCusts);
         cbCustomer.setPromptText("Select a customer:");
-        return null;
     }
     
     public void convertCustomerString() {
@@ -184,75 +224,59 @@ public class AddAppointmentController implements Initializable {
         });
     }
     
-    private String emptyInput = new String();
-    
-    private boolean isInputEmpty() {
-        boolean bEmpty = true;
-        if (cbCustomer.getValue() == null) {
-            bEmpty=true;
-            emptyInput += "There was no customer selected!";
-        }
-        if (txtTitle.getText().isEmpty()) {
-            bEmpty=true;
-            emptyInput += "\nThe title cannot be empty!";
-        }
-        if (txtDescription.getText().isEmpty()) {
-            bEmpty=true;
-            emptyInput += "\nThe description cannot be empty!";
-        }
-        if (txtLocation.getText().isEmpty()) {
-            bEmpty=true;
-            emptyInput += "\nThe location cannot be empty!";
-        }
-        if (txtContact.getText().isEmpty()) {
-            bEmpty=true;
-            emptyInput += "\nThe contact cannot be empty!";
-        }
-        if (txtType.getText().isEmpty()) {
-            bEmpty=true;
-            emptyInput += "\nThe type cannot be empty!";
-        }
-        if (txtUrl.getText().isEmpty()) {
-            bEmpty=true;
-            emptyInput += "\nThe url cannot be empty!";
-        }
-        if (txtStart.getText().isEmpty()) {
-            bEmpty=true;
-            emptyInput += "\nThe start cannot be empty!";
-        }
-        if (txtEnd.getText().isEmpty()) {
-            bEmpty=true;
-            emptyInput += "\nThe end cannot be empty!";
-        }
-        return bEmpty;
+    public void setDefaultDateTime() {
+        dpStartDate.setValue(LocalDate.now());
+        dpEndDate.setValue(LocalDate.now());
+        spStartTime.setValueFactory(svfStart);
+        svfStart.setValue(LocalTime.of(8, 00));
+        spEndTime.setValueFactory(svfEnd);
+        svfEnd.setValue(LocalTime.of(17, 00));
     }
     
-    private String invalidInput = new String();
+    SpinnerValueFactory svfStart = new SpinnerValueFactory<LocalTime>() {
+        {
+            setConverter(new LocalTimeStringConverter(formatTime,null));
+        }
+        @Override public void decrement(int steps) {
+            LocalTime time = (LocalTime) getValue();
+            setValue(time.minusHours(steps));
+            setValue(time.minusMinutes(16 - steps));
+        }
+        @Override public void increment(int steps) {
+            LocalTime time = (LocalTime) getValue();
+            setValue(time.plusHours(steps));
+            setValue(time.plusMinutes(steps + 14));
+        }
+    };
     
-    private boolean isInputValid() {
-        boolean bValid = false;
-        if (cbCustomer.getValue() != null) {
-            bValid=true;
+    SpinnerValueFactory svfEnd = new SpinnerValueFactory<LocalTime>() {
+        {
+            setConverter(new LocalTimeStringConverter(formatTime,null));
         }
-        if (!(txtTitle.getText().isEmpty())) {
-           if (!(txtTitle.getText().matches("[a-zA-Z]"))) {
-                bValid=false;
-                invalidInput += "\nThe title can only contain letters!";
-            }
-           else {
-               bValid=true;
-           }
+        @Override
+        public void decrement(int steps) {
+            LocalTime time = (LocalTime) getValue();
+            setValue(time.minusHours(steps));
+            setValue(time.minusMinutes(16 - steps));
         }
-        return bValid;
-    }
+        @Override
+        public void increment(int steps) {
+            LocalTime time = (LocalTime) getValue();
+            setValue(time.plusHours(steps));
+            setValue(time.plusMinutes(steps + 14));
+        }
+    };
 
     /**
      * Initializes the controller class.
+     * @param url
+     * @param rb
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         getActiveCustomers();
         convertCustomerString();
+        setDefaultDateTime();
     }    
     
 }

@@ -6,12 +6,16 @@ package SchedulingApp.View_Controller;
 
 import SchedulingApp.DAO.DBAppointment;
 import SchedulingApp.DAO.DBCustomer;
+import SchedulingApp.Exceptions.AppointmentException;
 import SchedulingApp.Model.Appointment;
 import SchedulingApp.Model.Customer;
 import static SchedulingApp.View_Controller.AppointmentCalendarController.selectedAppt;
 import static SchedulingApp.View_Controller.LoginScreenController.loggedUser;
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
@@ -20,17 +24,20 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
+import javafx.util.converter.LocalTimeStringConverter;
 
 /**
  * FXML Controller class
@@ -100,7 +107,34 @@ public class ModifyAppointmentController implements Initializable {
     private Button btnExit;
     
     @FXML
-    private final DateTimeFormatter formatDT = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss a z");
+    private DatePicker dpStartDate;
+
+    @FXML
+    private Spinner<LocalTime> spStartTime;
+    
+    @FXML
+    private DatePicker dpEndDate;
+
+    @FXML
+    private Spinner<LocalTime> spEndTime;
+    
+    @FXML
+    private String errEmptyInput = new String();
+    
+    @FXML
+    private String errValidation = new String();
+    
+    @FXML
+    private Appointment appt = new Appointment();
+    
+    @FXML
+    private final DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    
+    @FXML
+    private final DateTimeFormatter formatTime = DateTimeFormatter.ofPattern("HH:mm");
+    
+    @FXML
+    private static ZoneId zId = ZoneId.systemDefault();
     
     @FXML
     void getExitAction(ActionEvent eExitAction) {
@@ -122,6 +156,7 @@ public class ModifyAppointmentController implements Initializable {
                 modApptStage.close();
             }
             catch (IOException e) {
+                e.printStackTrace();
             }
         }
         else {
@@ -130,26 +165,35 @@ public class ModifyAppointmentController implements Initializable {
     }
 
     @FXML
-    void getSaveAction(ActionEvent eSaveAction) {
+    void getSaveAction(ActionEvent eSaveAction) throws Exception {
         Alert saveAlert = new Alert(Alert.AlertType.CONFIRMATION);
         saveAlert.setTitle("Save Appointment Modifications");
         saveAlert.setHeaderText("Are you sure you want to save?");
         saveAlert.setContentText("Press OK to save the modifications. \nPress Cancel to stay on this screen.");
         saveAlert.showAndWait();
         if (saveAlert.getResult() == ButtonType.OK) {
-            updateApptInfo();
             try {
-                FXMLLoader apptCalLoader = new FXMLLoader(AppointmentCalendarController.class.getResource("AppointmentCalendar.fxml"));
-                Parent apptCalScreen = apptCalLoader.load();
-                Scene apptCalScene = new Scene(apptCalScreen);
-                Stage apptCalStage = new Stage();
-                apptCalStage.setTitle("Appointment Calendar");
-                apptCalStage.setScene(apptCalScene);
-                apptCalStage.show();
-                Stage modApptStage = (Stage) btnSave.getScene().getWindow();
-                modApptStage.close();
+                updateApptInfo();
+                appt.isValidInput();
+                if (appt.isValidInput()) {
+                    DBAppointment.updateAppointment(appt);
+                    FXMLLoader apptCalLoader = new FXMLLoader(AppointmentCalendarController.class.getResource("AppointmentCalendar.fxml"));
+                    Parent apptCalScreen = apptCalLoader.load();
+                    Scene apptCalScene = new Scene(apptCalScreen);
+                    Stage apptCalStage = new Stage();
+                    apptCalStage.setTitle("Appointment Calendar");
+                    apptCalStage.setScene(apptCalScene);
+                    apptCalStage.show();
+                    Stage modApptStage = (Stage) btnSave.getScene().getWindow();
+                    modApptStage.close();
+                }
             }
-            catch (IOException e) {
+            catch (AppointmentException e) {
+                Alert exAlert = new Alert(Alert.AlertType.ERROR);
+                exAlert.setTitle("Exception");
+                exAlert.setHeaderText("There was an exception!");
+                exAlert.setContentText(e.getMessage());
+                exAlert.showAndWait().filter(response -> response == ButtonType.OK);
             }
         }
         else {
@@ -185,12 +229,15 @@ public class ModifyAppointmentController implements Initializable {
         txtContact.setText(selectedAppt.getContact());
         txtType.setText(selectedAppt.getType());
         txtUrl.setText(selectedAppt.getUrl());
-        txtStart.setText(selectedAppt.getStart().format(formatDT));
-        txtEnd.setText(selectedAppt.getEnd().format(formatDT));
+        dpStartDate.setValue(selectedAppt.getStart().toLocalDate());
+        spStartTime.setValueFactory(svfStart);
+        svfStart.setValue(selectedAppt.getStart().toLocalTime());
+        dpEndDate.setValue(selectedAppt.getEnd().toLocalDate());
+        spEndTime.setValueFactory(svfEnd);
+        svfEnd.setValue(selectedAppt.getEnd().toLocalTime());
     }
     
     public void updateApptInfo() {
-        Appointment appt = new Appointment();
         appt.setCustomerId(cbCustomer.getValue().getCustomerId());
         appt.setUserId(loggedUser.getUserId());
         appt.setTitle(txtTitle.getText());
@@ -199,12 +246,47 @@ public class ModifyAppointmentController implements Initializable {
         appt.setContact(txtContact.getText());
         appt.setType(txtType.getText());
         appt.setUrl(txtUrl.getText());
-        appt.setStart(ZonedDateTime.parse(txtStart.getText(), formatDT));
-        appt.setEnd(ZonedDateTime.parse(txtEnd.getText(), formatDT));
+        appt.setStart(ZonedDateTime.of(LocalDate.parse(dpStartDate.getValue().toString(), formatDate), LocalTime.parse(spStartTime.getValue().toString(), formatTime), zId));
+        appt.setEnd(ZonedDateTime.of(LocalDate.parse(dpEndDate.getValue().toString(), formatDate), LocalTime.parse(spEndTime.getValue().toString(), formatTime), zId));
         appt.setAppointmentId(selectedAppt.getAppointmentId());
-        DBAppointment.updateAppointment(appt);
     }
 
+    SpinnerValueFactory svfStart = new SpinnerValueFactory<LocalTime>() {
+        {
+            setConverter(new LocalTimeStringConverter(formatTime,null));
+        }
+        @Override
+        public void decrement(int steps) {
+            LocalTime time = (LocalTime) getValue();
+            setValue(time.minusHours(steps));
+            setValue(time.minusMinutes(16 - steps));
+        }
+        @Override
+        public void increment(int steps) {
+            LocalTime time = (LocalTime) getValue();
+            setValue(time.plusHours(steps));
+            setValue(time.plusMinutes(steps + 14));            
+        }
+    };
+    
+    SpinnerValueFactory svfEnd = new SpinnerValueFactory<LocalTime>() {
+        {
+            setConverter(new LocalTimeStringConverter(formatTime,null));
+        }
+        @Override
+        public void decrement(int steps) {
+            LocalTime time = (LocalTime) getValue();
+            setValue(time.minusHours(steps));
+            setValue(time.minusMinutes(16 - steps));
+        }
+        @Override
+        public void increment(int steps) {
+            LocalTime time = (LocalTime) getValue();
+            setValue(time.plusHours(steps));
+            setValue(time.plusMinutes(steps + 14));
+        }
+    };
+    
     /**
      * Initializes the controller class.
      * @param url

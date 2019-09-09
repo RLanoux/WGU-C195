@@ -5,13 +5,18 @@
  */
 package SchedulingApp.Model;
 
+import SchedulingApp.DAO.DBAppointment;
+import SchedulingApp.Exceptions.AppointmentException;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.ObservableList;
 
 /**
  *
@@ -200,5 +205,54 @@ public class Appointment {
     
     public void setCustomer(Customer customer) {
         this.customer = customer;
+    }
+    
+    public boolean isValidInput() throws AppointmentException {
+        if (this.customer == null) {
+            throw new AppointmentException("You must select a customer!");
+        }
+        if (this.title.get().equals("")) {
+            throw new AppointmentException("You must enter a title!");
+        }
+        if (this.description.get().equals("")) {
+            throw new AppointmentException("You must enter a description!");
+        }
+        if (this.location.get().equals("")) {
+            throw new AppointmentException("You must enter a location!");
+        }
+        if (this.contact.get().equals("")) {
+            throw new AppointmentException("You must enter a contact!");
+        }
+        if (this.type.get().equals("")) {
+            throw new AppointmentException("You must enter a type!");
+        }
+        if (this.url.get().equals("")) {
+            throw new AppointmentException("You must enter a url!");
+        }
+        isValidTime();
+        return true;
+    }
+    
+    public boolean isValidTime() throws AppointmentException {
+        LocalTime midnight = LocalTime.MIDNIGHT;
+        LocalDate apptStartDate = this.start.toLocalDate();
+        LocalTime apptStartTime = this.start.toLocalTime();
+        LocalDate apptEndDate = this.end.toLocalDate();
+        LocalTime apptEndTime = this.end.toLocalTime();
+        int weekDay = apptStartDate.getDayOfWeek().getValue();
+        
+        if (!apptStartDate.isEqual(apptEndDate)) {
+            throw new AppointmentException("An appoinment can only be a single day!");
+        }
+        if (weekDay == 6 || weekDay == 7) {
+            throw new AppointmentException("An appointment can only be scheduled on weekdays!");
+        }
+        if (apptStartTime.isBefore(midnight.plusHours(8))) {
+            throw new AppointmentException("An appointment cannot be scheduled before normal business hours!");
+        }
+        if (apptEndTime.isAfter(midnight.plusHours(17))) {
+            throw new AppointmentException("An appointment cannot be scheduled after normal business hours!");
+        }
+        return true;
     }
 }
