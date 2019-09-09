@@ -7,6 +7,7 @@ package SchedulingApp.View_Controller;
 import SchedulingApp.DAO.DBAppointment;
 import static SchedulingApp.DAO.DBAppointment.getApptsByMonth;
 import static SchedulingApp.DAO.DBAppointment.getApptsByWeek;
+import SchedulingApp.DAO.DBCustomer;
 import SchedulingApp.Model.Appointment;
 import SchedulingApp.Model.Customer;
 import java.io.IOException;
@@ -300,7 +301,54 @@ public class AppointmentCalendarController implements Initializable {
     
     @FXML
     void getDeleteCust(ActionEvent event) {
-
+        if (tpWeeklyAppts.isSelected()) {
+            Alert delAlert = new Alert(AlertType.CONFIRMATION);
+            delAlert.setTitle("Delete Customer");
+            delAlert.setHeaderText("Are you sure you want to delete this customer?");
+            delAlert.setContentText("Press OK to delete the customer. \nPress Cancel to cancel the deletion.");
+            delAlert.showAndWait();
+            if (delAlert.getResult() == ButtonType.OK) {
+                try {
+                    Customer cust = tvWeeklyAppts.getSelectionModel().getSelectedItem().getCustomer();
+                    DBCustomer.deleteCustomer(cust);
+                    getAppointments();
+                }
+                catch (NullPointerException e) {
+                    Alert nullAlert = new Alert(AlertType.ERROR);
+                    nullAlert.setTitle("Customer Modification Error");
+                    nullAlert.setHeaderText("The customer is not able to be deleted!");
+                    nullAlert.setContentText("There was no customer selected!");
+                    nullAlert.showAndWait();
+                }
+            }
+            else {
+                delAlert.close();
+            }
+        }
+        else if (tpMonthlyAppts.isSelected()) {
+            Alert delAlert = new Alert(AlertType.CONFIRMATION);
+            delAlert.setTitle("Delete Customer");
+            delAlert.setHeaderText("Are you sure you want to delete this customer?");
+            delAlert.setContentText("Press OK to delete the customer. \nPress Cancel to cancel the deletion.");
+            delAlert.showAndWait();
+            if (delAlert.getResult() == ButtonType.OK) {
+                try {
+                    Customer cust = tvMonthlyAppts.getSelectionModel().getSelectedItem().getCustomer();
+                    DBCustomer.deleteCustomer(cust);
+                    getAppointments();
+                }
+                catch (NullPointerException e) {
+                    Alert nullAlert = new Alert(AlertType.ERROR);
+                    nullAlert.setTitle("Customer Modification Error");
+                    nullAlert.setHeaderText("The customer is not able to be deleted!");
+                    nullAlert.setContentText("There was no customer selected!");
+                    nullAlert.showAndWait();
+                }
+            }
+            else {
+                delAlert.close();
+            }
+        }
     }
 
     @FXML

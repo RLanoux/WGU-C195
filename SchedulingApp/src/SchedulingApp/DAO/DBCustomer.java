@@ -79,7 +79,7 @@ public class DBCustomer {
      * @param customer
      * @return customer
      */
-    public Customer addCustomer(Customer customer) {
+    public static Customer addCustomer(Customer customer) {
         String addCustomerSQL = String.join(" ", 
                 "INSERT INTO customer (customerName, addressId, active, createDate, createdBy, lastUpdate, lastUpdateBy)",
                 "VALUES (?, ?, 1, NOW(), ?, NOW(), ?)");
@@ -102,7 +102,7 @@ public class DBCustomer {
      * This method updates an existing Customer record in the MySQL database.
      * @param customer
      */
-    public void updateCustomer(Customer customer) {
+    public static void updateCustomer(Customer customer) {
         String updateCustomerSQL = String.join(" ", 
                 "UPDATE customer",
                 "SET customerName=?, addressId=?, lastUpdate=NOW(), lastUpdateBy=?",
@@ -117,6 +117,7 @@ public class DBCustomer {
             stmt.executeUpdate();
         }
         catch (SQLException e) {
+            e.printStackTrace();
         }
     }
     
@@ -124,7 +125,7 @@ public class DBCustomer {
      * This method deletes an existing Customer from the MySQL database.
      * @param customer
      */
-    public void deleteCustomer(Customer customer) {
+    public static void deleteCustomer(Customer customer) {
         String deleteCustomerSQL = "DELETE FROM customer WHERE customerId = ?";
         
         try {
@@ -133,6 +134,7 @@ public class DBCustomer {
             stmt.executeUpdate();
         }
         catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }

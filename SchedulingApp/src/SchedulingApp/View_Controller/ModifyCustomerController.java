@@ -4,6 +4,7 @@
  */
 package SchedulingApp.View_Controller;
 
+import SchedulingApp.Model.Country;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -13,6 +14,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -62,6 +64,12 @@ public class ModifyCustomerController implements Initializable {
 
     @FXML
     private TextField txtCustName;
+    
+    @FXML
+    private Label lblCountry;
+
+    @FXML
+    private ComboBox<Country> cbCountry;
 
     @FXML
     void getExitAction(ActionEvent eExitButton) {
