@@ -29,7 +29,7 @@ public class DBAppointment {
     
     public static ObservableList<Appointment> getApptsByWeek() {
         ObservableList<Appointment> apptsByWeek = FXCollections.observableArrayList();
-        String getApptsByWeekSQL = "SELECT customer.customerId, customer.customerName, appointment.* FROM customer "
+        String getApptsByWeekSQL = "SELECT customer.*, appointment.* FROM customer "
                 + "RIGHT JOIN appointment ON customer.customerId = appointment.customerId "
                 + "WHERE start BETWEEN NOW() AND (SELECT ADDDATE(NOW(), INTERVAL 7 DAY))";
         
@@ -38,9 +38,7 @@ public class DBAppointment {
             ResultSet rs = stmt.executeQuery();
             
             while (rs.next()) {
-                Customer selectedCust = new Customer();
-                selectedCust.setCustomerId(rs.getInt("customerId"));
-                selectedCust.setCustomerName(rs.getString("customerName"));
+                Customer selectedCust = DBCustomer.getActiveCustomerById(rs.getInt("customerId"));
                 Appointment getWeeklyAppts = new Appointment();
                 getWeeklyAppts.setCustomer(selectedCust);
                 getWeeklyAppts.setAppointmentId(rs.getInt("appointmentId"));
@@ -70,7 +68,7 @@ public class DBAppointment {
     }
     public static ObservableList<Appointment> getApptsByMonth() {
         ObservableList<Appointment> apptsByMonth = FXCollections.observableArrayList();
-        String getApptsByMonthSQL = "SELECT customer.customerId, customer.customerName, appointment.* FROM customer "
+        String getApptsByMonthSQL = "SELECT customer.*, appointment.* FROM customer "
                 + "RIGHT JOIN appointment ON customer.customerId = appointment.customerId "
                 + "WHERE start BETWEEN NOW() AND (SELECT LAST_DAY(NOW()))";
         
@@ -79,9 +77,7 @@ public class DBAppointment {
             ResultSet rs = stmt.executeQuery();
             
             while (rs.next()) {
-                Customer selectedCust = new Customer();
-                selectedCust.setCustomerId(rs.getInt("customerId"));
-                selectedCust.setCustomerName(rs.getString("customerName"));
+                Customer selectedCust = DBCustomer.getActiveCustomerById(rs.getInt("customerId"));
                 Appointment getMonthlyAppts = new Appointment();
                 getMonthlyAppts.setCustomer(selectedCust);
                 getMonthlyAppts.setAppointmentId(rs.getInt("appointmentId"));
@@ -113,7 +109,7 @@ public class DBAppointment {
     public Appointment getApptById(int appointmentId) {
         String getApptByIdSQL = "SELECT customer.customerId, customer.customerName, appointment.* FROM customer "
                 + "RIGHT JOIN appointment ON customer.customerId = appointment.customerId " 
-                +"WHERE appointmentId = ?";
+                + "WHERE appointmentId = ?";
         Appointment getApptById = new Appointment();
         try {
             PreparedStatement stmt = DB_CONN.prepareStatement(getApptByIdSQL);

@@ -5,6 +5,7 @@
  */
 package SchedulingApp.Model;
 
+import SchedulingApp.Exceptions.CustomerException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
@@ -78,5 +79,12 @@ public class City {
 
     public void setLastUpdateBy(String lastUpdateBy) {
         this.lastUpdateBy = lastUpdateBy;
+    }
+    
+    public boolean isCityEmpty() throws CustomerException {
+        if (this.city.equals("")) {
+            throw new CustomerException("You must enter a city!");
+        }
+        return true;
     }
 }

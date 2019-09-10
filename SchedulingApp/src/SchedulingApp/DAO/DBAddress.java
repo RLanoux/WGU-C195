@@ -18,7 +18,7 @@ import java.sql.Statement;
  */
 public class DBAddress {
     
-    public Address getAddressById(int addressId) {
+    public static Address getAddressById(int addressId) {
         String getAddressByIdSQL = "SELECT * FROM address WHERE addressId = ?";
         Address getAddById = new Address();
         

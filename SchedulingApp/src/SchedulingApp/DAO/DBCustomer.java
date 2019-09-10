@@ -52,8 +52,8 @@ public class DBCustomer {
      * @param customerId
      * @return getCustomerQuery
      */
-    public static Customer getCustomerById(int customerId) {
-        String getCustomerByIdSQL = "SELECT * FROM customer WHERE customerId = ?";
+    public static Customer getActiveCustomerById(int customerId) {
+        String getCustomerByIdSQL = "SELECT * FROM customer WHERE customerId = ? AND active=1";
         Customer getCustomerQuery = new Customer();
         
         try {
@@ -66,6 +66,8 @@ public class DBCustomer {
                 getCustomerQuery.setCustomerName(rs.getString("customerName"));
                 getCustomerQuery.setAddressId(rs.getInt("addressId"));
                 getCustomerQuery.setActive(rs.getBoolean("active"));
+                getCustomerQuery.setLastUpdate(rs.getTimestamp("lastUpdate"));
+                getCustomerQuery.setLastUpdateBy(rs.getString("lastUpdateBy"));
             }
         }
         catch (SQLException e) {
@@ -122,11 +124,12 @@ public class DBCustomer {
     }
     
     /**
-     * This method deletes an existing Customer from the MySQL database.
+     * This method soft deletes an existing Customer from the MySQL database
+     * by setting the active property to 0.
      * @param customer
      */
     public static void deleteCustomer(Customer customer) {
-        String deleteCustomerSQL = "DELETE FROM customer WHERE customerId = ?";
+        String deleteCustomerSQL = "UPDATE customer SET active=0 WHERE customerId = ?";
         
         try {
             PreparedStatement stmt = DB_CONN.prepareStatement(deleteCustomerSQL);

@@ -17,7 +17,7 @@ import java.sql.SQLException;
  */
 public class DBCity {
     
-    public City getCityById(int cityId) {
+    public static City getCityById(int cityId) {
         String getCityByIdSQL = "SELECT * FROM city WHERE cityId = ?";
         City getCityById = new City();
         

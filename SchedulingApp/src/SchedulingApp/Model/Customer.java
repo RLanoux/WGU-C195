@@ -1,5 +1,6 @@
 package SchedulingApp.Model;
 
+import SchedulingApp.Exceptions.CustomerException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import javafx.beans.property.BooleanProperty;
@@ -104,5 +105,12 @@ public class Customer {
 
     public void setLastUpdateBy(String lastUpdateBy) {
         this.lastUpdateBy = lastUpdateBy;
+    }
+    
+    public boolean isEmptyInput() throws CustomerException {
+        if (this.customerName.get().equals("")) {
+            throw new CustomerException("You must enter a customer!");
+        }
+        return true;
     }
 }

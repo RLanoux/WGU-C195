@@ -5,6 +5,7 @@
  */
 package SchedulingApp.Model;
 
+import SchedulingApp.Exceptions.CustomerException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
@@ -105,5 +106,18 @@ public class Address {
 
     public void setLastUpdateBy(String lastUpdateBy) {
         this.lastUpdateBy = lastUpdateBy;
+    }
+    
+    public boolean isAddressEmpty() throws CustomerException {
+        if (this.address.equals("")) {
+            throw new CustomerException("You must enter an address in the address field!");
+        }
+        if (this.phone.equals("")) {
+            throw new CustomerException("You must enter a phone number!");
+        }
+        if (this.postalCode.equals("")) {
+            throw new CustomerException("You must enter a postal code!");
+        }
+        return true;
     }
 }

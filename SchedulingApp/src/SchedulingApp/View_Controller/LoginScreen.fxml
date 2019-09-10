@@ -19,8 +19,8 @@
          <font>
             <Font name="System Italic" size="12.0" />
          </font></PasswordField>
-      <Button fx:id="btnLogin" layoutX="120.0" layoutY="88.0" mnemonicParsing="false" onAction="#getLoginAction" prefHeight="25.0" prefWidth="80.0" text="Conectar" AnchorPane.leftAnchor="120.0" />
-      <Button fx:id="btnExit" layoutX="164.0" layoutY="88.0" mnemonicParsing="false" onAction="#getExitAction" prefHeight="25.0" prefWidth="80.0" text="Salida" AnchorPane.rightAnchor="10.0" />
+      <Button fx:id="btnLogin" defaultButton="true" layoutX="120.0" layoutY="88.0" mnemonicParsing="false" onAction="#getLoginAction" prefHeight="25.0" prefWidth="80.0" text="Conectar" AnchorPane.leftAnchor="120.0" />
+      <Button fx:id="btnExit" cancelButton="true" layoutX="164.0" layoutY="88.0" mnemonicParsing="false" onAction="#getExitAction" prefHeight="25.0" prefWidth="80.0" text="Salida" AnchorPane.rightAnchor="10.0" />
       <Label fx:id="lblAlert" alignment="CENTER" layoutX="85.0" layoutY="119.0" minHeight="16" minWidth="69" textAlignment="CENTER" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
     </children>
 </AnchorPane>

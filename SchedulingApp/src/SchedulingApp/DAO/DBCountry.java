@@ -11,6 +11,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 /**
  * This class contains the data access objects (DAOs) 
@@ -18,7 +20,28 @@ import java.sql.Statement;
  */
 public class DBCountry {
     
-    public Country getCountryById(int countryId) {
+    public static ObservableList<Country> getAllCountries() {
+        ObservableList<Country> allCountries = FXCollections.observableArrayList();
+        String getAllCountriesSQL = "SELECT * FROM country";
+        
+        try {
+            PreparedStatement stmt = DB_CONN.prepareStatement(getAllCountriesSQL);
+            ResultSet rs = stmt.executeQuery();
+            
+            while (rs.next()) {
+                Country country = new Country();
+                country.setCountryId(rs.getInt("countryId"));
+                country.setCountry(rs.getString("country"));
+                allCountries.add(country);
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return allCountries;
+    }
+    
+    public static Country getCountryById(int countryId) {
         String getCountryByIdSQL = "SELECT * FROM country WHERE countryId = ?";
         Country getCountryById = new Country();
         
@@ -33,6 +56,7 @@ public class DBCountry {
             }
         }
         catch (SQLException e) {
+            e.printStackTrace();
         }
         return getCountryById;
     }

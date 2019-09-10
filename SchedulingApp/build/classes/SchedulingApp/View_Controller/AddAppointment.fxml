@@ -78,11 +78,26 @@
                         <Font size="18.0" />
                      </font>
                   </Label>
+                  <Label text="Start Time" GridPane.halignment="CENTER" GridPane.rowIndex="8">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
                   <Label fx:id="lblEnd" text="End Date" GridPane.halignment="CENTER" GridPane.rowIndex="9">
                      <font>
                         <Font size="18.0" />
                      </font>
                   </Label>
+                  <Label text="End Time" GridPane.halignment="CENTER" GridPane.rowIndex="10">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <ComboBox fx:id="cbCustomer" prefWidth="190.0" GridPane.columnIndex="1">
+                     <padding>
+                        <Insets right="10.0" />
+                     </padding>
+                  </ComboBox>
                   <TextField fx:id="txtTitle" GridPane.columnIndex="1" GridPane.rowIndex="1">
                      <GridPane.margin>
                         <Insets right="10.0" />
@@ -113,6 +128,26 @@
                         <Insets right="10.0" />
                      </GridPane.margin>
                   </TextField>
+                  <DatePicker fx:id="dpStartDate" prefHeight="25.0" prefWidth="190.0" GridPane.columnIndex="1" GridPane.rowIndex="7">
+                     <GridPane.margin>
+                        <Insets right="10.0" />
+                     </GridPane.margin>
+                  </DatePicker>
+                  <Spinner fx:id="spStartTime" prefWidth="190.0" GridPane.columnIndex="1" GridPane.rowIndex="8">
+                     <GridPane.margin>
+                        <Insets right="10.0" />
+                     </GridPane.margin>
+                  </Spinner>
+                  <DatePicker fx:id="dpEndDate" prefWidth="190.0" GridPane.columnIndex="1" GridPane.rowIndex="9">
+                     <GridPane.margin>
+                        <Insets right="10.0" />
+                     </GridPane.margin>
+                  </DatePicker>
+                  <Spinner fx:id="spEndTime" prefWidth="190.0" GridPane.columnIndex="1" GridPane.rowIndex="10">
+                     <GridPane.margin>
+                        <Insets right="10.0" />
+                     </GridPane.margin>
+                  </Spinner>
                   <Button fx:id="btnSave" mnemonicParsing="false" onAction="#getSaveAction" prefWidth="85.0" text="Save" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.rowIndex="11">
                      <GridPane.margin>
                         <Insets left="10.0" />
@@ -129,41 +164,6 @@
                         <Font size="14.0" />
                      </font>
                   </Button>
-                  <ComboBox fx:id="cbCustomer" prefWidth="190.0" GridPane.columnIndex="1">
-                     <padding>
-                        <Insets right="10.0" />
-                     </padding>
-                  </ComboBox>
-                  <Label text="Start Time" GridPane.halignment="CENTER" GridPane.rowIndex="8">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Label>
-                  <Label text="End Time" GridPane.halignment="CENTER" GridPane.rowIndex="10">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Label>
-                  <DatePicker fx:id="dpStartDate" prefHeight="25.0" prefWidth="190.0" GridPane.columnIndex="1" GridPane.rowIndex="7">
-                     <GridPane.margin>
-                        <Insets right="10.0" />
-                     </GridPane.margin>
-                  </DatePicker>
-                  <DatePicker fx:id="dpEndDate" prefWidth="190.0" GridPane.columnIndex="1" GridPane.rowIndex="9">
-                     <GridPane.margin>
-                        <Insets right="10.0" />
-                     </GridPane.margin>
-                  </DatePicker>
-                  <Spinner fx:id="spStartTime" prefWidth="190.0" GridPane.columnIndex="1" GridPane.rowIndex="8">
-                     <GridPane.margin>
-                        <Insets right="10.0" />
-                     </GridPane.margin>
-                  </Spinner>
-                  <Spinner fx:id="spEndTime" prefWidth="190.0" GridPane.columnIndex="1" GridPane.rowIndex="10">
-                     <GridPane.margin>
-                        <Insets right="10.0" />
-                     </GridPane.margin>
-                  </Spinner>
                </children>
             </GridPane>
          </children>
