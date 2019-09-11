@@ -8,11 +8,12 @@ import static SchedulingApp.DAO.DBConnector.DB_CONN;
 import SchedulingApp.Model.Appointment;
 import SchedulingApp.Model.Customer;
 import static SchedulingApp.View_Controller.LoginScreenController.loggedUser;
+import static SchedulingApp.View_Controller.ModifyAppointmentController.appt;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -144,39 +145,79 @@ public class DBAppointment {
         }
         return getApptById;
     }
+    
+    public static ObservableList<Appointment> getOverlappingAppts() {
+        ObservableList<Appointment> getOverlappedAppts = FXCollections.observableArrayList();
+        String getOverlappingApptsSQL = "SELECT appointmentId FROM appointment WHERE start OR end BETWEEN TIMESTAMP(?) AND TIMESTAMP(?)";
+        
+        try {
+            LocalDateTime startLDT = LocalDateTime.ofInstant(appt.getStart().toInstant(), ZoneId.of("UTC"));
+            LocalDateTime endLDT = LocalDateTime.ofInstant(appt.getEnd().toInstant(), ZoneId.of("UTC"));
+            Timestamp startTS = Timestamp.valueOf(startLDT);
+            Timestamp endTS = Timestamp.valueOf(endLDT);
+            PreparedStatement stmt = DB_CONN.prepareStatement(getOverlappingApptsSQL);
+            stmt.setTimestamp(1, startTS);
+            stmt.setTimestamp(2, endTS);
+            ResultSet rs = stmt.executeQuery();
+            
+            if (rs.next()) {
+                while (rs.next()) {
+                    Appointment overlappedAppt = new Appointment();
+                    overlappedAppt.setAppointmentId(rs.getInt("appointmentId"));
+                    getOverlappedAppts.add(overlappedAppt);
+                }
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return getOverlappedAppts;
+    } 
+    
+    private static int getMaxAppointmentId() {
+        int maxAppointmentId = 0;
+        String maxAppointmentIdSQL = "SELECT MAX(appointmentId) FROM appointment";
+        
+        try {
+            Statement stmt = DB_CONN.createStatement();
+            ResultSet rs = stmt.executeQuery(maxAppointmentIdSQL);
+            
+            if (rs.next()) {
+                maxAppointmentId = rs.getInt(1);
+            }
+        }
+        catch (SQLException e) {
+        }
+        return maxAppointmentId + 1;
+    }
 
     public static Appointment addAppointment(Appointment appointment) {
         String addAppointmentSQL = String.join(" ",
-                "INSERT INTO appointment (customerId, userId, title, "
+                "INSERT INTO appointment (appointmentId, customerId, userId, title, "
                             + "description, location, contact, type, url, start, end, "
                             + "createDate, createdBy, lastUpdate, lastUpdateBy) ",
-                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?, NOW(), ?)");
         
+        int appointmentId = getMaxAppointmentId();
         try {
             PreparedStatement stmt = DB_CONN.prepareStatement(addAppointmentSQL);
-            stmt.setObject(1, appointment.getCustomerId());
-            stmt.setObject(2, appointment.getUserId());
-            stmt.setObject(3, appointment.getTitle());
-            stmt.setObject(4, appointment.getDescription());
-            stmt.setObject(5, appointment.getLocation());
-            stmt.setObject(6, appointment.getContact());
-            stmt.setObject(7, appointment.getType());
-            stmt.setObject(8, appointment.getUrl());
+            stmt.setInt(1, appointmentId);
+            stmt.setObject(2, appointment.getCustomerId());
+            stmt.setObject(3, appointment.getUserId());
+            stmt.setObject(4, appointment.getTitle());
+            stmt.setObject(5, appointment.getDescription());
+            stmt.setObject(6, appointment.getLocation());
+            stmt.setObject(7, appointment.getContact());
+            stmt.setObject(8, appointment.getType());
+            stmt.setObject(9, appointment.getUrl());
             
             ZonedDateTime startZDT = appointment.getStart().withZoneSameInstant(ZoneId.of("UTC"));
             ZonedDateTime endZDT = appointment.getEnd().withZoneSameInstant(ZoneId.of("UTC"));
-            stmt.setTimestamp(9, Timestamp.valueOf(startZDT.toLocalDateTime()));
-            stmt.setTimestamp(10, Timestamp.valueOf(endZDT.toLocalDateTime()));
-            
-            ZonedDateTime createZDT = ZonedDateTime.now().withZoneSameInstant(ZoneId.of("UTC"));
-            stmt.setTimestamp(11, Timestamp.valueOf(createZDT.toLocalDateTime()));
+            stmt.setTimestamp(10, Timestamp.valueOf(startZDT.toLocalDateTime()));
+            stmt.setTimestamp(11, Timestamp.valueOf(endZDT.toLocalDateTime()));
             
             stmt.setString(12, loggedUser.getUserName());
-            
-            ZonedDateTime updateZDT = ZonedDateTime.now().withZoneSameInstant(ZoneId.of("UTC"));
-            stmt.setTimestamp(13, Timestamp.valueOf(updateZDT.toLocalDateTime()));
-            
-            stmt.setString(14, loggedUser.getUserName());
+            stmt.setString(13, loggedUser.getUserName());
             stmt.executeUpdate();
         }
         catch (SQLException e){
@@ -188,7 +229,7 @@ public class DBAppointment {
         String updateApptSQL = String.join(" ",
                 "UPDATE appointment",
                 "SET customerId=?, userId=?, title=?, description=?, location=?," +
-                "contact=?, type=?, url=?, start=?, end=?, lastUpdate=?, lastUpdateBy=?",
+                "contact=?, type=?, url=?, start=?, end=?, lastUpdate=NOW(), lastUpdateBy=?",
                 "WHERE appointmentId=?");
         
         try {
@@ -207,11 +248,8 @@ public class DBAppointment {
             stmt.setTimestamp(9, Timestamp.valueOf(startZDT.toLocalDateTime()));
             stmt.setTimestamp(10, Timestamp.valueOf(endZDT.toLocalDateTime()));
             
-            ZonedDateTime updateZDT = ZonedDateTime.now().withZoneSameInstant(ZoneId.of("UTC"));
-            stmt.setTimestamp(11, Timestamp.valueOf(updateZDT.toLocalDateTime()));
-            
-            stmt.setString(12, loggedUser.getUserName());
-            stmt.setObject(13, appointment.getAppointmentId());
+            stmt.setString(11, loggedUser.getUserName());
+            stmt.setObject(12, appointment.getAppointmentId());
             stmt.executeUpdate();
         }
         catch (SQLException e) {

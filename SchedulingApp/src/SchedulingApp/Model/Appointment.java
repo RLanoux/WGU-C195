@@ -255,4 +255,12 @@ public class Appointment {
         }
         return true;
     }
+    
+    public boolean isNotOverlapping() throws AppointmentException {
+        ObservableList<Appointment> overlappingAppt = DBAppointment.getOverlappingAppts();
+        if (overlappingAppt.size() > 1) {
+            throw new AppointmentException("An appointment cannot be scheduled at the same time as another appointment!");
+        }
+        return true;
+    }
 }

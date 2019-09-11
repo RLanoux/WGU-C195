@@ -7,10 +7,12 @@ package SchedulingApp.View_Controller;
 import SchedulingApp.DAO.DBAddress;
 import SchedulingApp.DAO.DBCity;
 import SchedulingApp.DAO.DBCountry;
+import SchedulingApp.DAO.DBCustomer;
 import SchedulingApp.Exceptions.CustomerException;
 import SchedulingApp.Model.Address;
 import SchedulingApp.Model.City;
 import SchedulingApp.Model.Country;
+import SchedulingApp.Model.Customer;
 import static SchedulingApp.View_Controller.AppointmentCalendarController.selectedCust;
 import java.io.IOException;
 import java.net.URL;
@@ -19,7 +21,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -129,10 +130,25 @@ public class ModifyCustomerController implements Initializable {
         if (saveAlert.getResult() == ButtonType.OK) {
             try {
                 updateCustInfo();
-                selectedCust.isEmptyInput();
-                custAddress.isAddressEmpty();
-                custCity.isCityEmpty();
-                custCountry.isCountryEmpty();
+                if (Customer.isValidInput(selectedCust, custAddress, custCity, custCountry)) {
+                    try {
+                        DBCustomer.updateCustomer(selectedCust);
+                        DBAddress.updateAddress(custAddress);
+                        DBCity.updateCity(custCity);
+                        FXMLLoader apptCalLoader = new FXMLLoader(AppointmentCalendarController.class.getResource("AppointmentCalendar.fxml"));
+                        Parent apptCalScreen = apptCalLoader.load();
+                        Scene apptCalScene = new Scene(apptCalScreen);
+                        Stage apptCalStage = new Stage();
+                        apptCalStage.setTitle("Appointment Calendar");
+                        apptCalStage.setScene(apptCalScene);
+                        apptCalStage.show();
+                        Stage modCustStage = (Stage) btnSave.getScene().getWindow();
+                        modCustStage.close();
+                    }
+                    catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
             catch (CustomerException e) {
                 Alert exAlert = new Alert(Alert.AlertType.ERROR);
@@ -154,7 +170,7 @@ public class ModifyCustomerController implements Initializable {
         custAddress.setPostalCode(txtCustPostalCode.getText());
         custAddress.setPhone(txtCustPhone.getText());
         custCity.setCity(txtCustCity.getText());
-        custCountry.setCountry(cbCountry.getSelectionModel().getSelectedItem().getCountry());
+        custCity.setCountryId(cbCountry.getSelectionModel().getSelectedItem().getCountryId());
     }
     
     public void setCountries() {

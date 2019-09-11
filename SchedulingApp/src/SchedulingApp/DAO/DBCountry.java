@@ -60,7 +60,7 @@ public class DBCountry {
         }
         return getCountryById;
     }
-    private int getMaxCountryId() {
+    private static int getMaxCountryId() {
         int maxCountryId = 0;
         String maxCountryIdSQL = "SELECT MAX(countryId) FROM country";
         
@@ -76,7 +76,8 @@ public class DBCountry {
         }
         return maxCountryId + 1;
     }
-    public int addCcountry(Country country) {
+    
+    public static int addCcountry(Country country) {
         String addCountrySQL = String.join(" ",
                 "INSERT INTO country (countryId, country, createDate, createdBy, lastUpdate, lastUpdateBy)",
                 "VALUES (?, ?, NOW(), ?, NOW(), ?)");
@@ -94,7 +95,7 @@ public class DBCountry {
         }
         return countryId;
     }
-    public void updateCountry(Country country) {
+    public static void updateCountry(Country country) {
         String updateCountrySQL = String.join(" ",
                 "UPDATE country",
                 "SET country=?, lastUpdate=NOW(), lastUpdateBy=?",

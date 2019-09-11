@@ -11,6 +11,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -34,6 +38,7 @@ import javafx.stage.Stage;
 public class LoginScreenController implements Initializable {
     ResourceBundle rb;
     Locale userLocale;
+    Logger userLog = Logger.getLogger("userlog.txt");
     
     @FXML
     private Label lblAlert;
@@ -79,34 +84,41 @@ public class LoginScreenController implements Initializable {
         loggedUser.setUserName(username);
         loggedUser.setPassword(password);
         
+        FileHandler userLogFH = new FileHandler("userlog.txt", true);
+        SimpleFormatter sf = new SimpleFormatter();
+        userLogFH.setFormatter(sf);
+        userLog.addHandler(userLogFH);
+        userLog.setLevel(Level.INFO);
         
         try {
             ObservableList<User> userLoginInfo = DBUser.getActiveUsers();
-            boolean found = false;
-            for (User u: userLoginInfo) {
-                if ((loggedUser.getUserName().equals(u.getUserName())) && (loggedUser.getPassword().equals(u.getPassword()))) {
-                    int userId = u.getUserId();
-                    loggedUser.setUserId(userId);
-                    found = true;
-                        try {
-                            FXMLLoader apptCalLoader = new FXMLLoader(AppointmentCalendarController.class.getResource("AppointmentCalendar.fxml"));
-                            Parent apptCalScreen = apptCalLoader.load();
-                            Scene apptCalScene = new Scene(apptCalScreen);
-                            Stage apptCalStage = new Stage();
-                            apptCalStage.setTitle("Appointment Calendar");
-                            apptCalStage.setScene(apptCalScene);
-                            apptCalStage.show();
-                            Stage loginStage = (Stage) btnLogin.getScene().getWindow();
-                            loginStage.close();
-                        }
-                        catch (IOException e) {
-                        }
-                } 
-            }
-            if (!found) {
-                this.lblAlert.setText(this.rb.getString("lblErrorAlert") + ".");
-                this.lblAlert.setTextFill(Paint.valueOf("RED"));
-            }
+            userLoginInfo.forEach((u) -> {
+                try {
+                    assert loggedUser.getUserName().equals(u.getUserName()) && loggedUser.getPassword().equals(u.getPassword()) : "Incorrect login info!";
+                    loggedUser.setUserId(u.getUserId());
+                    try {
+                        userLog.log(Level.INFO, "User: {0} logged in.", loggedUser.getUserName());
+                        FXMLLoader apptCalLoader = new FXMLLoader(AppointmentCalendarController.class.getResource("AppointmentCalendar.fxml"));
+                        Parent apptCalScreen = apptCalLoader.load();
+                        Scene apptCalScene = new Scene(apptCalScreen);
+                        Stage apptCalStage = new Stage();
+                        apptCalStage.setTitle("Appointment Calendar");
+                        apptCalStage.setScene(apptCalScene);
+                        apptCalStage.show();
+                        Stage loginStage = (Stage) btnLogin.getScene().getWindow();
+                        loginStage.close();
+                    }
+                    catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                catch (AssertionError e) {
+                    System.out.println(e.getMessage());
+                    this.lblAlert.setText(this.rb.getString("lblErrorAlert") + ".");
+                    this.lblAlert.setTextFill(Paint.valueOf("RED"));
+                    userLog.log(Level.WARNING, "Invalid credentials entered! User: {0}", loggedUser.getUserName());
+                }
+            });
         }
         catch (Exception e) {
             e.printStackTrace();

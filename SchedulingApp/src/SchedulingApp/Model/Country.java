@@ -71,11 +71,4 @@ public class Country {
     public void setLastUpdateBy(String lastUpdateBy) {
         this.lastUpdateBy = lastUpdateBy;
     }
-
-    public boolean isCountryEmpty() throws CustomerException {
-        if (this.country.equals("")) {
-            throw new CustomerException("You must select a country!");
-        }
-        return true;
-    }
 }

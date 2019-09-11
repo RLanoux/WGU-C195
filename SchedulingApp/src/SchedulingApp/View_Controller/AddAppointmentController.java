@@ -164,6 +164,7 @@ public class AddAppointmentController implements Initializable {
             try {
                 getApptInfo();
                 appt.isValidInput();
+                appt.isNotOverlapping();
                 if (appt.isValidInput()) {
                     DBAppointment.addAppointment(appt);
                     FXMLLoader apptCalLoader = new FXMLLoader(AppointmentCalendarController.class.getResource("AppointmentCalendar.fxml"));

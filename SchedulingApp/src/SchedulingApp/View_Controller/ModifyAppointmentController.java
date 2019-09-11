@@ -125,7 +125,7 @@ public class ModifyAppointmentController implements Initializable {
     private String errValidation = new String();
     
     @FXML
-    private Appointment appt = new Appointment();
+    public static Appointment appt = new Appointment();
     
     @FXML
     private final DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -175,6 +175,7 @@ public class ModifyAppointmentController implements Initializable {
             try {
                 updateApptInfo();
                 appt.isValidInput();
+                appt.isNotOverlapping();
                 if (appt.isValidInput()) {
                     DBAppointment.updateAppointment(appt);
                     FXMLLoader apptCalLoader = new FXMLLoader(AppointmentCalendarController.class.getResource("AppointmentCalendar.fxml"));

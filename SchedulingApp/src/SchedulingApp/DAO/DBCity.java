@@ -10,6 +10,7 @@ import static SchedulingApp.View_Controller.LoginScreenController.loggedUser;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * This class contains the data access objects (DAOs) 
@@ -33,28 +34,50 @@ public class DBCity {
             }
         }
         catch (SQLException e) {
+            e.printStackTrace();
         }
         return getCityById;
     }
-
-    public City addCity(City city) {
-        String addCitySQL = String.join(" ",
-                "INSERT INTO city (city, countryId, createDate, createdBy, lastUpdate, lastUpdateBy)",
-                "VALUES (?, ?, NOW(), ?, NOW(), ?)");
+    
+    private static int getMaxCityId() {
+        int maxCityId = 0;
+        String maxCityIdSQL = "SELECT MAX(cityId) FROM city";
         
         try {
+            Statement stmt = DB_CONN.createStatement();
+            ResultSet rs = stmt.executeQuery(maxCityIdSQL);
+            
+            if (rs.next()) {
+                maxCityId = rs.getInt(1);
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return maxCityId + 1;
+    }
+
+    public static City addCity(City city) {
+        String addCitySQL = String.join(" ",
+                "INSERT INTO city (cityId, city, countryId, createDate, createdBy, lastUpdate, lastUpdateBy)",
+                "VALUES (?, ?, ?, NOW(), ?, NOW(), ?)");
+        
+        int cityId = getMaxCityId();
+        try {
             PreparedStatement stmt = DB_CONN.prepareStatement(addCitySQL);
-            stmt.setString(1, city.getCity());
-            stmt.setInt(2, city.getCountryId());
-            stmt.setString(3, loggedUser.getUserName());
+            stmt.setInt(1, cityId);
+            stmt.setString(2, city.getCity());
+            stmt.setInt(3, city.getCountryId());
             stmt.setString(4, loggedUser.getUserName());
+            stmt.setString(5, loggedUser.getUserName());
             stmt.executeUpdate();
         }
         catch (SQLException e) {
+            e.printStackTrace();
         }
         return city;
     }
-    public void updateCity(City city) {
+    public static void updateCity(City city) {
         String updateCitySQL = String.join(" ",
                 "UPDATE city",
                 "SET city=?, countryId=?, lastUpdate=NOW(), lastUpdateBy=?",
@@ -69,6 +92,7 @@ public class DBCity {
             stmt.executeUpdate();
         }
         catch (SQLException e) {
+            e.printStackTrace();
         }
     }
     public void deleteCity(City city) {
@@ -80,6 +104,7 @@ public class DBCity {
             stmt.executeUpdate();
         }
         catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }

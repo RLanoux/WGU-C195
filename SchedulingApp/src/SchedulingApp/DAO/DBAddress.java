@@ -40,7 +40,7 @@ public class DBAddress {
         }
         return getAddById;
     }
-    private int getMaxAddressId() {
+    private static int getMaxAddressId() {
         int maxAddressId = 0;
         String maxAddressIdSQL = "SELECT MAX(addressId) FROM address";
         
@@ -56,7 +56,7 @@ public class DBAddress {
         }
         return maxAddressId + 1;
     }
-    public int addAddress(Address address) {
+    public static int addAddress(Address address) {
         String addAddressSQL = String.join(" ",
                 "INSERT INTO address (addressId, address, address2, cityId, postalCode, phone, createDate, createdBy, lastUpdate, lastUpdateBy)",
                 "VALUES (?, ?, ?, ?, ?, ?, NOW(), ?, NOW(), ?)");
@@ -78,7 +78,7 @@ public class DBAddress {
         }
         return addressId;
     }
-    public void updateAddress(Address address) {
+    public static void updateAddress(Address address) {
         String updateAddressSQL = String.join(" ",
                 "UPDATE address",
                 "SET address=?, address2=?, cityId=?, postalCode=?, phone=?, lastUpdate=NOW(), lastUpdateBy=?",

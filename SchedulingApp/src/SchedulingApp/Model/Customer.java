@@ -107,9 +107,24 @@ public class Customer {
         this.lastUpdateBy = lastUpdateBy;
     }
     
-    public boolean isEmptyInput() throws CustomerException {
-        if (this.customerName.get().equals("")) {
+    public static boolean isValidInput(Customer selectedCust, Address custAddress, City custCity, Country custCountry) throws CustomerException {
+        if (selectedCust.getCustomerName().equals("")) {
             throw new CustomerException("You must enter a customer!");
+        }
+        if (custAddress.getAddress().equals("")) {
+            throw new CustomerException("You must enter an address in the address field!");
+        }
+        if (custAddress.getPhone().equals("")) {
+            throw new CustomerException("You must enter a phone number!");
+        }
+        if (custAddress.getPostalCode().equals("")) {
+            throw new CustomerException("You must enter a postal code!");
+        }
+        if (custCity.getCity().equals("")) {
+            throw new CustomerException("You must enter a city!");
+        }
+        if (custCountry.getCountry().equals("")) {
+            throw new CustomerException("You must select a country!");
         }
         return true;
     }
