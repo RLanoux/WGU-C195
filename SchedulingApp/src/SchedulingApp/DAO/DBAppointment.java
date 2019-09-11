@@ -146,27 +146,71 @@ public class DBAppointment {
         return getApptById;
     }
     
+    public static Appointment getUpcomingAppt() {
+        String getUpcomingApptSQL = "SELECT customer.customerName, appointment.* FROM appointment "
+                + "JOIN customer ON appointment.customerId = customer.customerId "
+                + "WHERE (start BETWEEN ? AND ADDTIME(NOW(), '00:15:00'))";
+        
+        Appointment upcomingAppt = new Appointment();
+        try {
+            PreparedStatement stmt = DB_CONN.prepareStatement(getUpcomingApptSQL);
+            ZonedDateTime localZT = ZonedDateTime.now(zId);
+            ZonedDateTime zdtUTC = localZT.withZoneSameInstant(ZoneId.of("UTC"));
+            LocalDateTime localUTC = zdtUTC.toLocalDateTime();
+            stmt.setTimestamp(1, Timestamp.valueOf(localUTC));
+            ResultSet rs = stmt.executeQuery();
+            
+            if (rs.next()) {
+                Customer cust = new Customer();
+                cust.setCustomerName(rs.getString("customerName"));
+                upcomingAppt.setCustomer(cust);
+                upcomingAppt.setAppointmentId(rs.getInt("appointmentId"));
+                upcomingAppt.setCustomerId(rs.getInt("customerId"));
+                upcomingAppt.setUserId(rs.getInt("userId"));
+                upcomingAppt.setTitle(rs.getString("title"));
+                LocalDateTime startUTC = rs.getTimestamp("start").toLocalDateTime();
+                ZonedDateTime startZDT = ZonedDateTime.ofInstant(startUTC.toInstant(ZoneOffset.UTC), zId);
+                upcomingAppt.setStart(startZDT);
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return upcomingAppt;
+    }
+    
     public static ObservableList<Appointment> getOverlappingAppts() {
         ObservableList<Appointment> getOverlappedAppts = FXCollections.observableArrayList();
-        String getOverlappingApptsSQL = "SELECT appointmentId FROM appointment WHERE start OR end BETWEEN TIMESTAMP(?) AND TIMESTAMP(?)";
+        String getOverlappingApptsSQL = "SELECT * FROM appointment " 
+                + "WHERE (start BETWEEN ? AND ? OR end BETWEEN ? AND ?)";
         
         try {
             LocalDateTime startLDT = LocalDateTime.ofInstant(appt.getStart().toInstant(), ZoneId.of("UTC"));
             LocalDateTime endLDT = LocalDateTime.ofInstant(appt.getEnd().toInstant(), ZoneId.of("UTC"));
-            Timestamp startTS = Timestamp.valueOf(startLDT);
-            Timestamp endTS = Timestamp.valueOf(endLDT);
             PreparedStatement stmt = DB_CONN.prepareStatement(getOverlappingApptsSQL);
-            stmt.setTimestamp(1, startTS);
-            stmt.setTimestamp(2, endTS);
+            stmt.setTimestamp(1, Timestamp.valueOf(startLDT));
+            stmt.setTimestamp(2, Timestamp.valueOf(endLDT));
+            stmt.setTimestamp(3, Timestamp.valueOf(startLDT));
+            stmt.setTimestamp(4, Timestamp.valueOf(endLDT));
             ResultSet rs = stmt.executeQuery();
             
-            if (rs.next()) {
                 while (rs.next()) {
                     Appointment overlappedAppt = new Appointment();
                     overlappedAppt.setAppointmentId(rs.getInt("appointmentId"));
+                    overlappedAppt.setTitle(rs.getString("title"));
+                    overlappedAppt.setDescription(rs.getString("description"));
+                    overlappedAppt.setLocation(rs.getString("location"));
+                    overlappedAppt.setContact(rs.getString("contact"));
+                    overlappedAppt.setType(rs.getString("type"));
+                    overlappedAppt.setUrl(rs.getString("url"));
+                    LocalDateTime startUTC = rs.getTimestamp("start").toLocalDateTime();
+                    LocalDateTime endUTC = rs.getTimestamp("end").toLocalDateTime();
+                    ZonedDateTime startLocal = ZonedDateTime.ofInstant(startUTC.toInstant(ZoneOffset.UTC), zId);
+                    ZonedDateTime endLocal = ZonedDateTime.ofInstant(endUTC.toInstant(ZoneOffset.UTC), zId);
+                    overlappedAppt.setStart(startLocal);
+                    overlappedAppt.setEnd(endLocal);
                     getOverlappedAppts.add(overlappedAppt);
                 }
-            }
         }
         catch (SQLException e) {
             e.printStackTrace();

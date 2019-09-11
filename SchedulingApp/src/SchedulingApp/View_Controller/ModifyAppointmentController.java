@@ -176,7 +176,7 @@ public class ModifyAppointmentController implements Initializable {
                 updateApptInfo();
                 appt.isValidInput();
                 appt.isNotOverlapping();
-                if (appt.isValidInput()) {
+                if (appt.isValidInput() && appt.isNotOverlapping()) {
                     DBAppointment.updateAppointment(appt);
                     FXMLLoader apptCalLoader = new FXMLLoader(AppointmentCalendarController.class.getResource("AppointmentCalendar.fxml"));
                     Parent apptCalScreen = apptCalLoader.load();

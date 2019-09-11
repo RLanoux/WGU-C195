@@ -428,7 +428,13 @@ public class AppointmentCalendarController implements Initializable {
 
     @FXML
     void getUserLogs(ActionEvent event) {
-
+        try {
+            ProcessBuilder pb = new ProcessBuilder("Notepad.exe", "userlog.txt");
+            pb.start();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     
     @FXML

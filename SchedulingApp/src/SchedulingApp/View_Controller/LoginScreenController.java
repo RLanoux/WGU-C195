@@ -5,7 +5,9 @@
  */
 package SchedulingApp.View_Controller;
 
+import SchedulingApp.DAO.DBAppointment;
 import SchedulingApp.DAO.DBUser;
+import SchedulingApp.Model.Appointment;
 import SchedulingApp.Model.User;
 import java.io.IOException;
 import java.net.URL;
@@ -91,22 +93,46 @@ public class LoginScreenController implements Initializable {
         userLog.setLevel(Level.INFO);
         
         try {
+            Appointment upcomingAppt = DBAppointment.getUpcomingAppt();
             ObservableList<User> userLoginInfo = DBUser.getActiveUsers();
             userLoginInfo.forEach((u) -> {
                 try {
                     assert loggedUser.getUserName().equals(u.getUserName()) && loggedUser.getPassword().equals(u.getPassword()) : "Incorrect login info!";
                     loggedUser.setUserId(u.getUserId());
                     try {
-                        userLog.log(Level.INFO, "User: {0} logged in.", loggedUser.getUserName());
-                        FXMLLoader apptCalLoader = new FXMLLoader(AppointmentCalendarController.class.getResource("AppointmentCalendar.fxml"));
-                        Parent apptCalScreen = apptCalLoader.load();
-                        Scene apptCalScene = new Scene(apptCalScreen);
-                        Stage apptCalStage = new Stage();
-                        apptCalStage.setTitle("Appointment Calendar");
-                        apptCalStage.setScene(apptCalScene);
-                        apptCalStage.show();
-                        Stage loginStage = (Stage) btnLogin.getScene().getWindow();
-                        loginStage.close();
+                        if (upcomingAppt.getStart() != null) {
+                            Alert apptAlert = new Alert(Alert.AlertType.INFORMATION);
+                            apptAlert.setTitle("Upcoming Appointment");
+                            apptAlert.setHeaderText("You have an upcoming appointment!");
+                            apptAlert.setContentText("You have an appointment at " + upcomingAppt.getStart() + " with client " + upcomingAppt.getCustomer().getCustomerName());
+                            /*if (apptAlert.getResult() == ButtonType.OK) {
+                                userLog.log(Level.INFO, "User: {0} logged in.", loggedUser.getUserName());
+                                FXMLLoader apptCalLoader = new FXMLLoader(AppointmentCalendarController.class.getResource("AppointmentCalendar.fxml"));
+                                Parent apptCalScreen = apptCalLoader.load();
+                                Scene apptCalScene = new Scene(apptCalScreen);
+                                Stage apptCalStage = new Stage();
+                                apptCalStage.setTitle("Appointment Calendar");
+                                apptCalStage.setScene(apptCalScene);
+                                apptCalStage.show();
+                                Stage loginStage = (Stage) btnLogin.getScene().getWindow();
+                                loginStage.close();
+                            }
+                            else {
+                                apptAlert.close();
+                            }*/
+                        }
+                        else {
+                            userLog.log(Level.INFO, "User: {0} logged in.", loggedUser.getUserName());
+                            FXMLLoader apptCalLoader = new FXMLLoader(AppointmentCalendarController.class.getResource("AppointmentCalendar.fxml"));
+                            Parent apptCalScreen = apptCalLoader.load();
+                            Scene apptCalScene = new Scene(apptCalScreen);
+                            Stage apptCalStage = new Stage();
+                            apptCalStage.setTitle("Appointment Calendar");
+                            apptCalStage.setScene(apptCalScene);
+                            apptCalStage.show();
+                            Stage loginStage = (Stage) btnLogin.getScene().getWindow();
+                            loginStage.close();
+                        }
                     }
                     catch (IOException e) {
                         e.printStackTrace();
