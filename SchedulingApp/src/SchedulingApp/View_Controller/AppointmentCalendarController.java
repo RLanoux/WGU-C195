@@ -294,7 +294,28 @@ public class AppointmentCalendarController implements Initializable {
 
     @FXML
     void getNewCust(ActionEvent event) {
-
+        Alert addAlert = new Alert(AlertType.CONFIRMATION);
+        addAlert.setTitle("Add Customer");
+        addAlert.setHeaderText("Are you sure you want to add a new customer?");
+        addAlert.setContentText("Press OK to add the customer. \nPress Cancel to cancel the addition.");
+        addAlert.showAndWait();
+        if (addAlert.getResult() == ButtonType.OK) {
+            try {
+                FXMLLoader addCustLoader = new FXMLLoader(AddCustomerController.class.getResource("AddCustomer.fxml"));
+                Parent addCustScreen = addCustLoader.load();
+                Scene addCustScene = new Scene(addCustScreen);
+                Stage addCustStage = new Stage();
+                addCustStage.setTitle("Add Customer");
+                addCustStage.setScene(addCustScene);
+                addCustStage.setResizable(false);
+                addCustStage.show();
+                Stage apptCalStage = (Stage) btnNewCust.getScene().getWindow();
+                apptCalStage.close();
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
     
     @FXML
@@ -454,6 +475,7 @@ public class AppointmentCalendarController implements Initializable {
     }
     
     public void getAppointments() {
+        //Multiple lambdas to effciently set the values of the weekly and monthly table view columns.
         tcWeeklyCustName.setCellValueFactory(cellData -> { return cellData.getValue().getCustomer().customerNameProperty(); });
         tcWeeklyApptTitle.setCellValueFactory(cellData -> { return cellData.getValue().titleProperty(); });
         tcWeeklyApptDescription.setCellValueFactory(cellData -> { return cellData.getValue().descriptionProperty(); });

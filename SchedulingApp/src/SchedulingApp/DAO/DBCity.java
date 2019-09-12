@@ -18,6 +18,25 @@ import java.sql.Statement;
  */
 public class DBCity {
     
+    public static int getCityId(String city) {
+        String getCitySQL = "SELECT cityId FROM city WHERE city = ?";
+        int cityId = 0;
+        
+        try {
+            PreparedStatement stmt = DB_CONN.prepareStatement(getCitySQL);
+            stmt.setString(1, city);
+            ResultSet rs = stmt.executeQuery();
+            
+            if (rs.next()) {
+                cityId = rs.getInt("cityId");
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return cityId;
+    }
+    
     public static City getCityById(int cityId) {
         String getCityByIdSQL = "SELECT * FROM city WHERE cityId = ?";
         City getCityById = new City();

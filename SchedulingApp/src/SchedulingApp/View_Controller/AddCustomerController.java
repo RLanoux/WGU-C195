@@ -1,6 +1,6 @@
-/**
+/*
  * Desktop Scheduling Application for C195
- * @author Raymond Lanoux <rlanoux@wgu.edu>
+ * @author Raymond Lanoux <rlanoux@wgu.edu>  * 
  */
 package SchedulingApp.View_Controller;
 
@@ -13,7 +13,6 @@ import SchedulingApp.Model.Address;
 import SchedulingApp.Model.City;
 import SchedulingApp.Model.Country;
 import SchedulingApp.Model.Customer;
-import static SchedulingApp.View_Controller.AppointmentCalendarController.selectedCust;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -34,11 +33,11 @@ import javafx.util.StringConverter;
 
 /**
  * FXML Controller class
- * This class contains the code that allows customer records
- * in the MySQL database to be modified.
+ *
+ * @author Raymond
  */
-public class ModifyCustomerController implements Initializable {
-
+public class AddCustomerController implements Initializable {
+    
     @FXML
     private Label lblCustName;
 
@@ -52,19 +51,28 @@ public class ModifyCustomerController implements Initializable {
     private Label lblCity;
 
     @FXML
+    private Label lblCountry;
+
+    @FXML
     private Label lblCustPostalCode;
 
     @FXML
     private Label lblCustPhone;
 
     @FXML
+    private TextField txtCustName;
+
+    @FXML
     private TextField txtCustAddress;
-    
+
     @FXML
     private TextField txtCustAddress2;
 
     @FXML
     private TextField txtCustCity;
+
+    @FXML
+    private ComboBox<Country> cbCountry;
 
     @FXML
     private TextField txtCustPostalCode;
@@ -77,25 +85,17 @@ public class ModifyCustomerController implements Initializable {
 
     @FXML
     private Button btnExit;
-
-    @FXML
-    private TextField txtCustName;
     
     @FXML
-    private Label lblCountry;
+    private Customer newCust = new Customer();
+    private Address custAddress = new Address();
+    private City custCity = new City();
+    private Country custCountry = new Country();
 
     @FXML
-    private ComboBox<Country> cbCountry;
-    
-    @FXML
-    private Address custAddress = DBAddress.getAddressById(selectedCust.getAddressId());
-    private City custCity = DBCity.getCityById(custAddress.getCityId());
-    private Country custCountry = DBCountry.getCountryById(custCity.getCountryId());
-
-    @FXML
-    void getExitAction(ActionEvent eExitButton) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Exit Customer Modification");
+    void getExitAction(ActionEvent eExit) {
+         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Exit Customer Additon");
         alert.setHeaderText("Are you sure you want to exit?");
         alert.setContentText("Press OK to exit the program. \nPress Cancel to stay on this screen.");
         alert.showAndWait();
@@ -129,12 +129,14 @@ public class ModifyCustomerController implements Initializable {
         saveAlert.showAndWait();
         if (saveAlert.getResult() == ButtonType.OK) {
             try {
-                updateCustInfo();
-                if (Customer.isValidInput(selectedCust, custAddress, custCity, custCountry)) {
+                getCustInfo();
+                if (Customer.isValidInput(newCust, custAddress, custCity, custCountry)) {
                     try {
-                        DBCustomer.updateCustomer(selectedCust);
-                        DBAddress.updateAddress(custAddress);
-                        DBCity.updateCity(custCity);
+                        DBCity.addCity(custCity);
+                        custAddress.setCityId(DBCity.getCityId(custCity.getCity()));
+                        DBAddress.addAddress(custAddress);
+                        newCust.setAddressId(DBAddress.getAddressId(custAddress.getAddress()));
+                        DBCustomer.addCustomer(newCust);
                         FXMLLoader apptCalLoader = new FXMLLoader(AppointmentCalendarController.class.getResource("AppointmentCalendar.fxml"));
                         Parent apptCalScreen = apptCalLoader.load();
                         Scene apptCalScene = new Scene(apptCalScreen);
@@ -142,8 +144,8 @@ public class ModifyCustomerController implements Initializable {
                         apptCalStage.setTitle("Appointment Calendar");
                         apptCalStage.setScene(apptCalScene);
                         apptCalStage.show();
-                        Stage modCustStage = (Stage) btnSave.getScene().getWindow();
-                        modCustStage.close();
+                        Stage addCustStage = (Stage) btnSave.getScene().getWindow();
+                        addCustStage.close();
                     }
                     catch (IOException e) {
                         e.printStackTrace();
@@ -163,28 +165,19 @@ public class ModifyCustomerController implements Initializable {
         }
     }
     
-    public void updateCustInfo() {
-        selectedCust.setCustomerName(txtCustName.getText());
+    public void getCustInfo() {
+        newCust.setCustomerName(txtCustName.getText());
         custAddress.setAddress(txtCustAddress.getText());
         custAddress.setAddress2(txtCustAddress2.getText());
         custAddress.setPostalCode(txtCustPostalCode.getText());
         custAddress.setPhone(txtCustPhone.getText());
         custCity.setCity(txtCustCity.getText());
         custCity.setCountryId(cbCountry.getSelectionModel().getSelectedItem().getCountryId());
+        custCountry.setCountry(cbCountry.getSelectionModel().getSelectedItem().getCountry());
     }
     
-    public void setCountries() {
+     public void setCountries() {
         cbCountry.setItems(DBCountry.getAllCountries());
-    }
-    
-    public void setSelectedCustomerInfo() {
-        txtCustName.setText(selectedCust.getCustomerName());
-        txtCustAddress.setText(custAddress.getAddress());
-        txtCustAddress2.setText(custAddress.getAddress2());
-        txtCustPostalCode.setText(custAddress.getPostalCode());
-        txtCustPhone.setText(custAddress.getPhone());
-        txtCustCity.setText(custCity.getCity());
-        cbCountry.setValue(custCountry);
     }
     
     public void convertCountryString() {
@@ -200,7 +193,7 @@ public class ModifyCustomerController implements Initializable {
             }
         });
     }
-    
+
     /**
      * Initializes the controller class.
      * @param url
@@ -208,9 +201,8 @@ public class ModifyCustomerController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        setCountries();
         convertCountryString();
-        setSelectedCustomerInfo();
+        setCountries();
     }    
     
 }

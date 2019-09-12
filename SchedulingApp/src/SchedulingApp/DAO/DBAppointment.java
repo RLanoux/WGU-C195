@@ -160,7 +160,7 @@ public class DBAppointment {
             stmt.setTimestamp(1, Timestamp.valueOf(localUTC));
             ResultSet rs = stmt.executeQuery();
             
-            if (rs.next()) {
+            while (rs.next()) {
                 Customer cust = new Customer();
                 cust.setCustomerName(rs.getString("customerName"));
                 upcomingAppt.setCustomer(cust);

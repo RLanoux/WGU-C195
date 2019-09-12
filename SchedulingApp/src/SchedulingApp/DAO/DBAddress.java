@@ -18,6 +18,25 @@ import java.sql.Statement;
  */
 public class DBAddress {
     
+    public static int getAddressId(String address) {
+        String getAddressSQL = "SELECT addressId FROM address WHERE address = ?";
+        int addressId = 0;
+        
+        try {
+            PreparedStatement stmt = DB_CONN.prepareStatement(getAddressSQL);
+            stmt.setString(1, address);
+            ResultSet rs = stmt.executeQuery();
+            
+            if (rs.next()) {
+                addressId = rs.getInt("addressId");
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return addressId;
+    }
+    
     public static Address getAddressById(int addressId) {
         String getAddressByIdSQL = "SELECT * FROM address WHERE addressId = ?";
         Address getAddById = new Address();

@@ -11,6 +11,8 @@ import SchedulingApp.Model.Appointment;
 import SchedulingApp.Model.User;
 import java.io.IOException;
 import java.net.URL;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.logging.FileHandler;
@@ -93,20 +95,27 @@ public class LoginScreenController implements Initializable {
         userLog.setLevel(Level.INFO);
         
         try {
-            Appointment upcomingAppt = DBAppointment.getUpcomingAppt();
             ObservableList<User> userLoginInfo = DBUser.getActiveUsers();
+            //Lambda to efficiently iterate through the list of active users
             userLoginInfo.forEach((u) -> {
                 try {
                     assert loggedUser.getUserName().equals(u.getUserName()) && loggedUser.getPassword().equals(u.getPassword()) : "Incorrect login info!";
                     loggedUser.setUserId(u.getUserId());
                     try {
-                        if (upcomingAppt.getStart() != null) {
+                        Appointment upcomingAppt = DBAppointment.getUpcomingAppt();
+                        if (!(upcomingAppt.getAppointmentId() == 0)) {
                             Alert apptAlert = new Alert(Alert.AlertType.INFORMATION);
-                            apptAlert.setTitle("Upcoming Appointment");
+                            apptAlert.setTitle("Upcoming Appointment Reminder");
                             apptAlert.setHeaderText("You have an upcoming appointment!");
-                            apptAlert.setContentText("You have an appointment at " + upcomingAppt.getStart() + " with client " + upcomingAppt.getCustomer().getCustomerName());
-                            /*if (apptAlert.getResult() == ButtonType.OK) {
+                            apptAlert.setContentText("You have an appointment scheduled" 
+                                    + "\non " + upcomingAppt.getStart().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL))
+                                    + "\nat " + upcomingAppt.getStart().format(DateTimeFormatter.ofLocalizedTime(FormatStyle.FULL))
+                                    + " with client " + upcomingAppt.getCustomer().getCustomerName() + ".");
+                            apptAlert.showAndWait();
+                            if (apptAlert.getResult() == ButtonType.OK) {
                                 userLog.log(Level.INFO, "User: {0} logged in.", loggedUser.getUserName());
+                                Stage loginStage = (Stage) btnLogin.getScene().getWindow();
+                                loginStage.close();
                                 FXMLLoader apptCalLoader = new FXMLLoader(AppointmentCalendarController.class.getResource("AppointmentCalendar.fxml"));
                                 Parent apptCalScreen = apptCalLoader.load();
                                 Scene apptCalScene = new Scene(apptCalScreen);
@@ -114,12 +123,10 @@ public class LoginScreenController implements Initializable {
                                 apptCalStage.setTitle("Appointment Calendar");
                                 apptCalStage.setScene(apptCalScene);
                                 apptCalStage.show();
-                                Stage loginStage = (Stage) btnLogin.getScene().getWindow();
-                                loginStage.close();
                             }
                             else {
                                 apptAlert.close();
-                            }*/
+                            }
                         }
                         else {
                             userLog.log(Level.INFO, "User: {0} logged in.", loggedUser.getUserName());
