@@ -48,6 +48,29 @@ public class DBCustomer {
         return activeCustomers;
     }
     
+    public static ObservableList<Customer> getAllCustomers() {
+        ObservableList<Customer> allCusts = FXCollections.observableArrayList();
+        String getAllCustsSQL = "SELECT * FROM customer";
+        
+        try {
+            PreparedStatement stmt = DB_CONN.prepareStatement(getAllCustsSQL);
+            ResultSet rs = stmt.executeQuery();
+            
+            while (rs.next()) {
+                Customer cust = new Customer();
+                cust.setCustomerId(rs.getInt("customerId"));
+                cust.setCustomerName(rs.getString("customerName"));
+                cust.setAddressId(rs.getInt("addressId"));
+                cust.setActive(rs.getBoolean("active"));
+                allCusts.add(cust);
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return allCusts;
+    }
+    
     /**
      * This method gets a Customer record from the MySQL database by customerId.
      * @param customerId

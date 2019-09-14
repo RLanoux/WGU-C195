@@ -7,6 +7,7 @@ package SchedulingApp.DAO;
 import static SchedulingApp.DAO.DBConnector.DB_CONN;
 import SchedulingApp.Model.Appointment;
 import SchedulingApp.Model.Customer;
+import SchedulingApp.Model.User;
 import static SchedulingApp.View_Controller.LoginScreenController.loggedUser;
 import static SchedulingApp.View_Controller.ModifyAppointmentController.appt;
 import java.sql.PreparedStatement;
@@ -105,6 +106,31 @@ public class DBAppointment {
             e.printStackTrace();
         }
         return apptsByMonth;
+    }
+    
+    public static ObservableList<Appointment> getApptsByUser() {
+        ObservableList<Appointment> apptsByUser = FXCollections.observableArrayList();
+        String getApptsByUserSQL = "SELECT user.userName, customer.customerName, appointment.start FROM user JOIN appointment ON user.userId = appointment.userId JOIN customer ON appointment.customerId = customer.customerId";
+        
+        try {
+            PreparedStatement stmt = DB_CONN.prepareStatement(getApptsByUserSQL);
+            ResultSet rs = stmt.executeQuery();
+            
+            while (rs.next()) {
+                User user = new User();
+                user.setUserName(rs.getString("userName"));
+                
+                Appointment appt = new Appointment();
+                //apptsByUser.add(rs.getString("customerName"));
+                LocalDateTime startUTC = rs.getTimestamp("start").toLocalDateTime();
+                ZonedDateTime startLocal = ZonedDateTime.ofInstant(startUTC.toInstant(ZoneOffset.UTC), zId);
+                //apptsByUser.add(startLocal);
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return apptsByUser;
     }
     
     public Appointment getApptById(int appointmentId) {

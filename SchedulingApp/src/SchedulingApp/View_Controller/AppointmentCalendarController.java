@@ -444,7 +444,21 @@ public class AppointmentCalendarController implements Initializable {
 
     @FXML
     void getReports(ActionEvent event) {
-
+        try {
+            FXMLLoader runReportLoader = new FXMLLoader(ReportController.class.getResource("Report.fxml"));
+            Parent runReportScreen = runReportLoader.load();
+            Scene runReportScene = new Scene(runReportScreen);
+            Stage runReportStage = new Stage();
+            runReportStage.setTitle("Reports");
+            runReportStage.setScene(runReportScene);
+            runReportStage.setResizable(false);
+            runReportStage.show();
+            Stage apptCalStage = (Stage) btnModifyCust.getScene().getWindow();
+            apptCalStage.close();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
