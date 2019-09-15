@@ -46,4 +46,24 @@ public class DBUser {
         }
         return activeUsers;
     }
+    
+    public static User getUserById(int userId) {
+        String getUserByIdSQL = "SELECT * FROM user WHERE userId=?";
+        User user = new User();
+        
+        try {
+            PreparedStatement stmt = DB_CONN.prepareStatement(getUserByIdSQL);
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
+            
+            if (rs.next()) {
+                user.setUserId(rs.getInt("userId"));
+                user.setUserName(rs.getString("userName"));
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
 }

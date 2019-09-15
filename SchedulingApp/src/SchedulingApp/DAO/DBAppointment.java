@@ -110,21 +110,20 @@ public class DBAppointment {
     
     public static ObservableList<Appointment> getApptsByUser() {
         ObservableList<Appointment> apptsByUser = FXCollections.observableArrayList();
-        String getApptsByUserSQL = "SELECT user.userName, customer.customerName, appointment.start FROM user JOIN appointment ON user.userId = appointment.userId JOIN customer ON appointment.customerId = customer.customerId";
+        String getApptsByUserSQL = "SELECT user.userId, customer.customerId, appointment.start FROM user JOIN appointment ON user.userId = appointment.userId JOIN customer ON appointment.customerId = customer.customerId";
         
         try {
             PreparedStatement stmt = DB_CONN.prepareStatement(getApptsByUserSQL);
             ResultSet rs = stmt.executeQuery();
             
             while (rs.next()) {
-                User user = new User();
-                user.setUserName(rs.getString("userName"));
-                
                 Appointment appt = new Appointment();
-                //apptsByUser.add(rs.getString("customerName"));
+                appt.setUserId(rs.getInt("userId"));
+                appt.setCustomerId(rs.getInt("customerId"));
                 LocalDateTime startUTC = rs.getTimestamp("start").toLocalDateTime();
                 ZonedDateTime startLocal = ZonedDateTime.ofInstant(startUTC.toInstant(ZoneOffset.UTC), zId);
-                //apptsByUser.add(startLocal);
+                appt.setStart(startLocal);
+                apptsByUser.add(appt);
             }
         }
         catch (SQLException e) {

@@ -6,11 +6,15 @@ package SchedulingApp.View_Controller;
 
 import SchedulingApp.DAO.DBAppointment;
 import SchedulingApp.DAO.DBCustomer;
+import SchedulingApp.DAO.DBUser;
 import SchedulingApp.Model.Appointment;
 import SchedulingApp.Model.Customer;
 import SchedulingApp.Model.User;
 import java.net.URL;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
+import java.util.stream.Collector;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -19,6 +23,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleGroup;
+import static javafx.scene.input.KeyCode.A;
+import static javafx.scene.input.KeyCode.R;
 
 /**
  * FXML Controller class
@@ -44,6 +50,12 @@ public class ReportController implements Initializable {
     
     @FXML
     private Button btnExit;
+    
+    @FXML
+    private final DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+    
+    @FXML
+    private final DateTimeFormatter formatTime = DateTimeFormatter.ofPattern("hh:mm a z");
 
     @FXML
     void getApptTypes(ActionEvent event) {
@@ -51,22 +63,6 @@ public class ReportController implements Initializable {
             try {
                 txtReportField.clear();
                 ObservableList<Appointment> apptTypes = DBAppointment.getApptsByMonth();
-                int apptTypeCount = 0;
-                String apptType = "";
-                String apptTypeOld = "";
-                String apptTypeNew = "";
-                for (Appointment aOld : apptTypes) {
-                    apptTypeOld = aOld.getType();
-                }
-                for (Appointment aNew : apptTypes) {
-                    apptTypeNew = aNew.getType();
-                }
-                for (Appointment a : apptTypes) {
-                    if (apptTypeOld.equals(apptTypeNew)) {
-                        apptTypeCount++;
-                    }
-                    txtReportField.appendText(apptTypeCount + " " + apptType);
-                }
             }
             catch (Exception e) {
                 e.printStackTrace();
@@ -101,11 +97,23 @@ public class ReportController implements Initializable {
         if (tbSchedule.isSelected()) {
             try {
                 txtReportField.clear();
-                ObservableList schedule = DBAppointment.getApptsByUser();
+                ObservableList<Appointment> userSchedule = DBAppointment.getApptsByUser();
+                String userName = "";
+                String custName = "";
+                ZonedDateTime startZDT;
                 
-                for (Object o : schedule) {
-                    String appt = o.toString();
-                    txtReportField.appendText(appt + "\n");
+                for (Appointment a : userSchedule) {
+                    int u = a.getUserId();
+                    int c = a.getCustomerId();
+                    startZDT = a.getStart();
+                    User userById = DBUser.getUserById(u);
+                    userName = userById.getUserName();
+                    Customer activeCustomerById = DBCustomer.getActiveCustomerById(c);
+                    custName = activeCustomerById.getCustomerName();
+                    txtReportField.appendText("User: " + userName 
+                            + " has an appointment with " + custName 
+                            + " on " + startZDT.format(formatDate) 
+                            + " at " + startZDT.format(formatTime) + ".\n");
                 }
             }
             catch (Exception e) {
