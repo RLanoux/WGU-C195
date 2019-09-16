@@ -10,21 +10,26 @@ import SchedulingApp.DAO.DBUser;
 import SchedulingApp.Model.Appointment;
 import SchedulingApp.Model.Customer;
 import SchedulingApp.Model.User;
+import java.io.IOException;
 import java.net.URL;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.ResourceBundle;
-import java.util.stream.Collector;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleGroup;
-import static javafx.scene.input.KeyCode.A;
-import static javafx.scene.input.KeyCode.R;
+import javafx.stage.Stage;
 
 /**
  * FXML Controller class
@@ -63,6 +68,11 @@ public class ReportController implements Initializable {
             try {
                 txtReportField.clear();
                 ObservableList<Appointment> apptTypes = DBAppointment.getApptsByMonth();
+                for (Appointment a: apptTypes) {
+                    int count = Collections.frequency(apptTypes, a);
+                    String apptType = a.getType();
+                    txtReportField.appendText("There are: " + count + " " + apptType + " appointment type(s) this month.\n");
+                }
             }
             catch (Exception e) {
                 e.printStackTrace();
@@ -124,7 +134,30 @@ public class ReportController implements Initializable {
 
     @FXML
     void handleExitAction(ActionEvent event) {
-
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Exit Customer Additon");
+        alert.setHeaderText("Are you sure you want to exit?");
+        alert.setContentText("Press OK to exit the program. \nPress Cancel to stay on this screen.");
+        alert.showAndWait();
+        if (alert.getResult() == ButtonType.OK) {
+            try {
+                FXMLLoader apptCalLoader = new FXMLLoader(AppointmentCalendarController.class.getResource("AppointmentCalendar.fxml"));
+                Parent apptCalScreen = apptCalLoader.load();
+                Scene apptCalScene = new Scene(apptCalScreen);
+                Stage apptCalStage = new Stage();
+                apptCalStage.setTitle("Appointment Calendar");
+                apptCalStage.setScene(apptCalScene);
+                apptCalStage.show();
+                Stage modCustStage = (Stage) btnExit.getScene().getWindow();
+                modCustStage.close();
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        else {
+            alert.close();
+        }
     }
 
     /**

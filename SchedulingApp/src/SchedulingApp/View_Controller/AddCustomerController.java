@@ -94,7 +94,7 @@ public class AddCustomerController implements Initializable {
 
     @FXML
     void getExitAction(ActionEvent eExit) {
-         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Exit Customer Additon");
         alert.setHeaderText("Are you sure you want to exit?");
         alert.setContentText("Press OK to exit the program. \nPress Cancel to stay on this screen.");
