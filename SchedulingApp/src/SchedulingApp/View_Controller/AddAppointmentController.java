@@ -114,7 +114,7 @@ public class AddAppointmentController implements Initializable {
     private Spinner<LocalTime> spEndTime;
     
     @FXML
-    private Appointment appt = new Appointment();
+    public static Appointment appt = new Appointment();
     
     @FXML
     private final DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("yyyy-MM-dd");

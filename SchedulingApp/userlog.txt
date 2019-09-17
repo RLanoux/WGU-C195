@@ -1,0 +1,36 @@
+Sep 16, 2019 6:36:30 PM SchedulingApp.View_Controller.LoginScreenController lambda$getLoginAction$0
+INFO: User: test logged in.
+Sep 16, 2019 6:40:03 PM SchedulingApp.View_Controller.LoginScreenController lambda$getLoginAction$0
+INFO: User: test logged in.
+Sep 16, 2019 6:42:12 PM SchedulingApp.View_Controller.LoginScreenController lambda$getLoginAction$0
+INFO: User: test logged in.
+Sep 16, 2019 6:44:14 PM SchedulingApp.View_Controller.LoginScreenController lambda$getLoginAction$0
+INFO: User: test logged in.
+Sep 16, 2019 6:54:09 PM SchedulingApp.View_Controller.LoginScreenController lambda$getLoginAction$0
+INFO: User: test logged in.
+Sep 16, 2019 6:57:07 PM SchedulingApp.View_Controller.LoginScreenController lambda$getLoginAction$0
+INFO: User: test logged in.
+Sep 16, 2019 7:03:41 PM SchedulingApp.View_Controller.LoginScreenController lambda$getLoginAction$0
+INFO: User: test logged in.
+Sep 16, 2019 7:05:07 PM SchedulingApp.View_Controller.LoginScreenController lambda$getLoginAction$0
+INFO: User: test logged in.
+Sep 16, 2019 7:32:11 PM SchedulingApp.View_Controller.LoginScreenController lambda$getLoginAction$0
+INFO: User: test logged in.
+Sep 16, 2019 7:43:16 PM SchedulingApp.View_Controller.LoginScreenController lambda$getLoginAction$0
+INFO: User: test logged in.
+Sep 16, 2019 7:44:12 PM SchedulingApp.View_Controller.LoginScreenController lambda$getLoginAction$0
+INFO: User: test logged in.
+Sep 16, 2019 7:45:58 PM SchedulingApp.View_Controller.LoginScreenController lambda$getLoginAction$0
+INFO: User: test logged in.
+Sep 16, 2019 7:46:36 PM SchedulingApp.View_Controller.LoginScreenController lambda$getLoginAction$0
+INFO: User: test logged in.
+Sep 16, 2019 7:48:41 PM SchedulingApp.View_Controller.LoginScreenController lambda$getLoginAction$0
+INFO: User: test logged in.
+Sep 16, 2019 7:52:36 PM SchedulingApp.View_Controller.LoginScreenController lambda$getLoginAction$0
+INFO: User: test logged in.
+Sep 16, 2019 7:53:24 PM SchedulingApp.View_Controller.LoginScreenController lambda$getLoginAction$0
+INFO: User: test logged in.
+Sep 16, 2019 7:54:38 PM SchedulingApp.View_Controller.LoginScreenController lambda$getLoginAction$0
+INFO: User: test logged in.
+Sep 17, 2019 7:56:34 PM SchedulingApp.View_Controller.LoginScreenController lambda$getLoginAction$0
+INFO: User: test logged in.

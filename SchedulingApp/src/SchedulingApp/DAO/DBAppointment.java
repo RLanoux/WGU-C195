@@ -7,7 +7,7 @@ package SchedulingApp.DAO;
 import static SchedulingApp.DAO.DBConnector.DB_CONN;
 import SchedulingApp.Model.Appointment;
 import SchedulingApp.Model.Customer;
-import SchedulingApp.Model.User;
+import SchedulingApp.View_Controller.AddAppointmentController;
 import static SchedulingApp.View_Controller.LoginScreenController.loggedUser;
 import static SchedulingApp.View_Controller.ModifyAppointmentController.appt;
 import java.sql.PreparedStatement;
@@ -204,14 +204,14 @@ public class DBAppointment {
         return upcomingAppt;
     }
     
-    public static ObservableList<Appointment> getOverlappingAppts() {
+    public static ObservableList<Appointment> getOverlappingAppts(LocalDateTime start, LocalDateTime end) {
         ObservableList<Appointment> getOverlappedAppts = FXCollections.observableArrayList();
         String getOverlappingApptsSQL = "SELECT * FROM appointment " 
                 + "WHERE (start BETWEEN ? AND ? OR end BETWEEN ? AND ?)";
         
         try {
-            LocalDateTime startLDT = LocalDateTime.ofInstant(appt.getStart().toInstant(), ZoneId.of("UTC"));
-            LocalDateTime endLDT = LocalDateTime.ofInstant(appt.getEnd().toInstant(), ZoneId.of("UTC"));
+            LocalDateTime startLDT = start.atZone(zId).withZoneSameInstant(ZoneOffset.UTC).toLocalDateTime();
+            LocalDateTime endLDT = end.atZone(zId).withZoneSameInstant(ZoneOffset.UTC).toLocalDateTime();
             PreparedStatement stmt = DB_CONN.prepareStatement(getOverlappingApptsSQL);
             stmt.setTimestamp(1, Timestamp.valueOf(startLDT));
             stmt.setTimestamp(2, Timestamp.valueOf(endLDT));

@@ -11,6 +11,7 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -253,11 +254,15 @@ public class Appointment {
         if (apptEndTime.isAfter(midnight.plusHours(17))) {
             throw new AppointmentException("An appointment cannot be scheduled after normal business hours!");
         }
+        if (apptStartDate.isBefore(LocalDate.now()) || apptStartTime.isBefore(LocalTime.MIDNIGHT)) {
+            throw new AppointmentException("An appointment cannot be scheduled in the past!");
+        }
         return true;
     }
     
+    
     public boolean isNotOverlapping() throws AppointmentException {
-        ObservableList<Appointment> overlappingAppt = DBAppointment.getOverlappingAppts();
+        ObservableList<Appointment> overlappingAppt = DBAppointment.getOverlappingAppts(this.start.toLocalDateTime(), this.end.toLocalDateTime());
         if (overlappingAppt.size() > 1) {
             throw new AppointmentException("An appointment cannot be scheduled at the same time as another appointment!");
         }
