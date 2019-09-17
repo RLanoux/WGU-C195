@@ -164,13 +164,22 @@ public class ModifyCustomerController implements Initializable {
     }
     
     public void updateCustInfo() {
-        selectedCust.setCustomerName(txtCustName.getText());
-        custAddress.setAddress(txtCustAddress.getText());
-        custAddress.setAddress2(txtCustAddress2.getText());
-        custAddress.setPostalCode(txtCustPostalCode.getText());
-        custAddress.setPhone(txtCustPhone.getText());
-        custCity.setCity(txtCustCity.getText());
-        custCity.setCountryId(cbCountry.getSelectionModel().getSelectedItem().getCountryId());
+        try {
+            selectedCust.setCustomerName(txtCustName.getText());
+            custAddress.setAddress(txtCustAddress.getText());
+            custAddress.setAddress2(txtCustAddress2.getText());
+            custAddress.setPostalCode(txtCustPostalCode.getText());
+            custAddress.setPhone(txtCustPhone.getText());
+            custCity.setCity(txtCustCity.getText());
+            custCity.setCountryId(cbCountry.getSelectionModel().getSelectedItem().getCountryId());
+        }
+        catch (NullPointerException e) {
+            Alert nullAlert = new Alert(Alert.AlertType.ERROR);
+            nullAlert.setTitle("Customer Addition Error");
+            nullAlert.setHeaderText("The customer is not able to be added!");
+            nullAlert.setContentText("One or more fields are empty!" + "\n" + e.getCause().toString());
+            nullAlert.showAndWait();
+        }
     }
     
     public void setCountries() {

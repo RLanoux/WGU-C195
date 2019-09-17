@@ -166,14 +166,23 @@ public class AddCustomerController implements Initializable {
     }
     
     public void getCustInfo() {
-        newCust.setCustomerName(txtCustName.getText());
-        custAddress.setAddress(txtCustAddress.getText());
-        custAddress.setAddress2(txtCustAddress2.getText());
-        custAddress.setPostalCode(txtCustPostalCode.getText());
-        custAddress.setPhone(txtCustPhone.getText());
-        custCity.setCity(txtCustCity.getText());
-        custCity.setCountryId(cbCountry.getSelectionModel().getSelectedItem().getCountryId());
-        custCountry.setCountry(cbCountry.getSelectionModel().getSelectedItem().getCountry());
+        try {
+            newCust.setCustomerName(txtCustName.getText());
+            custAddress.setAddress(txtCustAddress.getText());
+            custAddress.setAddress2(txtCustAddress2.getText());
+            custAddress.setPostalCode(txtCustPostalCode.getText());
+            custAddress.setPhone(txtCustPhone.getText());
+            custCity.setCity(txtCustCity.getText());
+            custCity.setCountryId(cbCountry.getSelectionModel().getSelectedItem().getCountryId());
+            custCountry.setCountry(cbCountry.getSelectionModel().getSelectedItem().getCountry());
+        }
+        catch (NullPointerException e) {
+            Alert nullAlert = new Alert(Alert.AlertType.ERROR);
+            nullAlert.setTitle("Customer Addition Error");
+            nullAlert.setHeaderText("The customer is not able to be added!");
+            nullAlert.setContentText("One or more fields are empty!" + "\n" + e.getCause().toString());
+            nullAlert.showAndWait();
+        }
     }
     
      public void setCountries() {
