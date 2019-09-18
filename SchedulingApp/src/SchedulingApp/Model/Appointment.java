@@ -210,7 +210,7 @@ public class Appointment {
     
     public boolean isValidInput() throws AppointmentException {
         if (this.customer == null) {
-            throw new AppointmentException("You must select a customer!");
+            throw new AppointmentException("There was no customer selected!");
         }
         if (this.title.get().equals("")) {
             throw new AppointmentException("You must enter a title!");

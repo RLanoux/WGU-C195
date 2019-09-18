@@ -107,8 +107,8 @@ public class Customer {
         this.lastUpdateBy = lastUpdateBy;
     }
     
-    public static boolean isValidInput(Customer selectedCust, Address custAddress, City custCity, Country custCountry) throws CustomerException {
-        if (selectedCust.getCustomerName().equals("")) {
+    public static boolean isValidInput(Customer Cust, Address custAddress, City custCity, Country custCountry) throws CustomerException {
+        if (Cust.getCustomerName().equals("")) {
             throw new CustomerException("You must enter a customer!");
         }
         if (custAddress.getAddress().equals("")) {

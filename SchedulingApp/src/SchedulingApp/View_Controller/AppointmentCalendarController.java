@@ -140,7 +140,7 @@ public class AppointmentCalendarController implements Initializable {
     public static Appointment selectedAppt;
     
     @FXML
-    public static Customer selectedCust;
+    public static boolean isModification;
     
     @FXML
     void getNewAppt(ActionEvent event) {
@@ -320,125 +320,61 @@ public class AppointmentCalendarController implements Initializable {
     
     @FXML
     void getModifyCust(ActionEvent event) {
-        if (tpWeeklyAppts.isSelected()) {
-            if (tvWeeklyAppts.getSelectionModel().getSelectedItem() == null) {
-                Alert nullAlert = new Alert(AlertType.ERROR);
-                nullAlert.setTitle("Customer Modification Error");
-                nullAlert.setHeaderText("The customer is not able to be modified!");
-                nullAlert.setContentText("There was no customer selected!");
-                nullAlert.showAndWait();
+        Alert modAlert = new Alert(AlertType.CONFIRMATION);
+        modAlert.setTitle("Modify Customer");
+        modAlert.setHeaderText("Are you sure you want to modify a customer?");
+        modAlert.setContentText("Press OK to modify a customer. \nPress Cancel to cancel the modification.");
+        modAlert.showAndWait();
+        if (modAlert.getResult() == ButtonType.OK) {
+            try {
+                isModification=true;
+                FXMLLoader selCustLoader = new FXMLLoader(CustomerSelectionController.class.getResource("CustomerSelection.fxml"));
+                Parent selCustScreen = selCustLoader.load();
+                Scene selCustScene = new Scene(selCustScreen);
+                Stage selCustStage = new Stage();
+                selCustStage.setTitle("Customer Selection");
+                selCustStage.setScene(selCustScene);
+                selCustStage.setResizable(false);
+                selCustStage.show();
+                Stage apptCalStage = (Stage) btnModifyCust.getScene().getWindow();
+                apptCalStage.close();
             }
-            else {
-                    Alert modAlert = new Alert(AlertType.CONFIRMATION);
-                    modAlert.setTitle("Modify Customer");
-                    modAlert.setHeaderText("Are you sure you want to modify this customer?");
-                    modAlert.setContentText("Press OK to modify the customer. \nPress Cancel to cancel the modification.");
-                    modAlert.showAndWait();
-                    if (modAlert.getResult() == ButtonType.OK) {
-                        try {
-                            selectedCust = tvWeeklyAppts.getSelectionModel().getSelectedItem().getCustomer();
-                            FXMLLoader modCustLoader = new FXMLLoader(ModifyCustomerController.class.getResource("ModifyCustomer.fxml"));
-                            Parent modCustScreen = modCustLoader.load();
-                            Scene modCustScene = new Scene(modCustScreen);
-                            Stage modCustStage = new Stage();
-                            modCustStage.setTitle("Modify Customer");
-                            modCustStage.setScene(modCustScene);
-                            modCustStage.setResizable(false);
-                            modCustStage.show();
-                            Stage apptCalStage = (Stage) btnModifyCust.getScene().getWindow();
-                            apptCalStage.close();
-                        }
-                        catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
+            catch (IOException e) {
+                e.printStackTrace();
             }
-        else if (tpMonthlyAppts.isSelected()) {
-            if (tvMonthlyAppts.getSelectionModel().getSelectedItem() == null) {
-                Alert nullAlert = new Alert(AlertType.ERROR);
-                nullAlert.setTitle("Customer Modification Error");
-                nullAlert.setHeaderText("The customer is not able to be modified!");
-                nullAlert.setContentText("There was no customer selected!");
-                nullAlert.showAndWait();
-            }
-            else {
-                    Alert modAlert = new Alert(AlertType.CONFIRMATION);
-                    modAlert.setTitle("Modify Customer");
-                    modAlert.setHeaderText("Are you sure you want to modify this customer?");
-                    modAlert.setContentText("Press OK to modify the customer. \nPress Cancel to cancel the modification.");
-                    modAlert.showAndWait();
-                    if (modAlert.getResult() == ButtonType.OK) {
-                        try {
-                            selectedCust = tvMonthlyAppts.getSelectionModel().getSelectedItem().getCustomer();
-                            FXMLLoader modCustLoader = new FXMLLoader(ModifyCustomerController.class.getResource("ModifyCustomer.fxml"));
-                            Parent modCustScreen = modCustLoader.load();
-                            Scene modCustScene = new Scene(modCustScreen);
-                            Stage modCustStage = new Stage();
-                            modCustStage.setTitle("Modify Customer");
-                            modCustStage.setScene(modCustScene);
-                            modCustStage.setResizable(false);
-                            modCustStage.show();
-                            Stage apptCalStage = (Stage) btnModifyCust.getScene().getWindow();
-                            apptCalStage.close();
-                        }
-                        catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
         }
-    }
+        else {
+            modAlert.close();
+        }
+    }     
     
     @FXML
     void getDeleteCust(ActionEvent event) {
-        if (tpWeeklyAppts.isSelected()) {
-            Alert delAlert = new Alert(AlertType.CONFIRMATION);
-            delAlert.setTitle("Delete Customer");
-            delAlert.setHeaderText("Are you sure you want to delete this customer?");
-            delAlert.setContentText("Press OK to delete the customer. \nPress Cancel to cancel the deletion.");
-            delAlert.showAndWait();
-            if (delAlert.getResult() == ButtonType.OK) {
-                try {
-                    Customer cust = tvWeeklyAppts.getSelectionModel().getSelectedItem().getCustomer();
-                    DBCustomer.deleteCustomer(cust);
-                    getAppointments();
-                }
-                catch (NullPointerException e) {
-                    Alert nullAlert = new Alert(AlertType.ERROR);
-                    nullAlert.setTitle("Customer Modification Error");
-                    nullAlert.setHeaderText("The customer is not able to be deleted!");
-                    nullAlert.setContentText("There was no customer selected!");
-                    nullAlert.showAndWait();
-                }
+        Alert delAlert = new Alert(AlertType.CONFIRMATION);
+        delAlert.setTitle("Delete Customer");
+        delAlert.setHeaderText("Are you sure you want to delete a customer?");
+        delAlert.setContentText("Press OK to delete a customer. \nPress Cancel to cancel the deletion.");
+        delAlert.showAndWait();
+        if (delAlert.getResult() == ButtonType.OK) {
+            try {
+                isModification=false;
+                FXMLLoader selCustLoader = new FXMLLoader(CustomerSelectionController.class.getResource("CustomerSelection.fxml"));
+                Parent selCustScreen = selCustLoader.load();
+                Scene selCustScene = new Scene(selCustScreen);
+                Stage selCustStage = new Stage();
+                selCustStage.setTitle("Customer Selection");
+                selCustStage.setScene(selCustScene);
+                selCustStage.setResizable(false);
+                selCustStage.show();
+                Stage apptCalStage = (Stage) btnDeleteCust.getScene().getWindow();
+                apptCalStage.close();
             }
-            else {
-                delAlert.close();
+            catch (IOException e) {
+                e.printStackTrace();
             }
         }
-        else if (tpMonthlyAppts.isSelected()) {
-            Alert delAlert = new Alert(AlertType.CONFIRMATION);
-            delAlert.setTitle("Delete Customer");
-            delAlert.setHeaderText("Are you sure you want to delete this customer?");
-            delAlert.setContentText("Press OK to delete the customer. \nPress Cancel to cancel the deletion.");
-            delAlert.showAndWait();
-            if (delAlert.getResult() == ButtonType.OK) {
-                try {
-                    Customer cust = tvMonthlyAppts.getSelectionModel().getSelectedItem().getCustomer();
-                    DBCustomer.deleteCustomer(cust);
-                    getAppointments();
-                }
-                catch (NullPointerException e) {
-                    Alert nullAlert = new Alert(AlertType.ERROR);
-                    nullAlert.setTitle("Customer Modification Error");
-                    nullAlert.setHeaderText("The customer is not able to be deleted!");
-                    nullAlert.setContentText("There was no customer selected!");
-                    nullAlert.showAndWait();
-                }
-            }
-            else {
-                delAlert.close();
-            }
+        else {
+            delAlert.close();
         }
     }
 

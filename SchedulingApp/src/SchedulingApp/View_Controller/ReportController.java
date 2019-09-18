@@ -14,8 +14,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.function.BiConsumer;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -68,11 +70,33 @@ public class ReportController implements Initializable {
             try {
                 txtReportField.clear();
                 ObservableList<Appointment> apptTypes = DBAppointment.getApptsByMonth();
-                for (Appointment a: apptTypes) {
-                    int count = Collections.frequency(apptTypes, a);
-                    String apptType = a.getType();
-                    txtReportField.appendText("There are: " + count + " " + apptType + " appointment type(s) this month.\n");
-                }
+                String apptType = "";
+                boolean isMatch = true;
+                Integer value = 1;
+                Map<String, Integer> map = new HashMap<>();
+                    for (Appointment a : apptTypes) {
+                        map.put(a.getType(), value);
+                        if (map.containsKey(a.getType())) {
+                            map.put(a.getType(), (map.get(a.getType())+1));
+                        }
+                        else {
+                            map.put(a.getType(), value);
+                        }
+                        for (String s : map.keySet()) {
+                            System.out.println("There are: " + map.get(s) + " " + s);
+                        }
+                       /* for (Appointment b : apptTypes) {
+                            if (b.getType().equals(a.getType())) {
+                                isMatch=true;
+                                count++;
+                                count2 = count;
+                                apptType = b.getType();
+                            }
+                        }
+                        if (isMatch) {
+                            System.out.println("There are: " + count2 + " " + apptType);
+                        }*/
+                    }   
             }
             catch (Exception e) {
                 e.printStackTrace();

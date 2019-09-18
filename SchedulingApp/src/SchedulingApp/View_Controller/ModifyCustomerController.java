@@ -13,7 +13,7 @@ import SchedulingApp.Model.Address;
 import SchedulingApp.Model.City;
 import SchedulingApp.Model.Country;
 import SchedulingApp.Model.Customer;
-import static SchedulingApp.View_Controller.AppointmentCalendarController.selectedCust;
+import static SchedulingApp.View_Controller.CustomerSelectionController.selectedCust;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;

@@ -180,7 +180,7 @@ public class AddCustomerController implements Initializable {
             Alert nullAlert = new Alert(Alert.AlertType.ERROR);
             nullAlert.setTitle("Customer Addition Error");
             nullAlert.setHeaderText("The customer is not able to be added!");
-            nullAlert.setContentText("One or more fields are empty!" + "\n" + e.getCause().toString());
+            nullAlert.setContentText("You must select a country!");
             nullAlert.showAndWait();
         }
     }

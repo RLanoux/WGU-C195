@@ -192,17 +192,26 @@ public class AddAppointmentController implements Initializable {
     }
     
     public void getApptInfo() throws AppointmentException {
-        appt.setCustomer(cbCustomer.getValue());
-        appt.setCustomerId(cbCustomer.getValue().getCustomerId());
-        appt.setUserId(loggedUser.getUserId());
-        appt.setTitle(txtTitle.getText());
-        appt.setDescription(txtDescription.getText());
-        appt.setLocation(txtLocation.getText());
-        appt.setContact(txtContact.getText());
-        appt.setType(txtType.getText());
-        appt.setUrl(txtUrl.getText());
-        appt.setStart(ZonedDateTime.of(LocalDate.parse(dpStartDate.getValue().toString(), formatDate), LocalTime.parse(spStartTime.getValue().toString(), formatTime), zId));
-        appt.setEnd(ZonedDateTime.of(LocalDate.parse(dpEndDate.getValue().toString(), formatDate), LocalTime.parse(spEndTime.getValue().toString(), formatTime), zId));
+        try {
+            appt.setCustomer(cbCustomer.getValue());
+            appt.setCustomerId(cbCustomer.getValue().getCustomerId());
+            appt.setUserId(loggedUser.getUserId());
+            appt.setTitle(txtTitle.getText());
+            appt.setDescription(txtDescription.getText());
+            appt.setLocation(txtLocation.getText());
+            appt.setContact(txtContact.getText());
+            appt.setType(txtType.getText());
+            appt.setUrl(txtUrl.getText());
+            appt.setStart(ZonedDateTime.of(LocalDate.parse(dpStartDate.getValue().toString(), formatDate), LocalTime.parse(spStartTime.getValue().toString(), formatTime), zId));
+            appt.setEnd(ZonedDateTime.of(LocalDate.parse(dpEndDate.getValue().toString(), formatDate), LocalTime.parse(spEndTime.getValue().toString(), formatTime), zId));
+        }
+        catch (NullPointerException e) {
+            Alert nullAlert = new Alert(Alert.AlertType.ERROR);
+            nullAlert.setTitle("Appointment Addition Error");
+            nullAlert.setHeaderText("The appointment is not able to be added!");
+            nullAlert.setContentText("You must select a customer!");
+            nullAlert.showAndWait();
+        }
     }
     
     public void getActiveCustomers() {
