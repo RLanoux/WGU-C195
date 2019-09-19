@@ -380,3 +380,9 @@ Sep 18, 2019 8:38:57 PM SchedulingApp.View_Controller.LoginScreenController lamb
 INFO: User: test logged in.
 Sep 18, 2019 8:44:42 PM SchedulingApp.View_Controller.LoginScreenController lambda$getLoginAction$0
 INFO: User: test logged in.
+Sep 19, 2019 6:40:38 PM SchedulingApp.View_Controller.LoginScreenController lambda$getLoginAction$0
+WARNING: Invalid credentials entered! User: t
+Sep 19, 2019 6:40:43 PM SchedulingApp.View_Controller.LoginScreenController lambda$getLoginAction$0
+INFO: User: test logged in.
+Sep 19, 2019 6:42:25 PM SchedulingApp.View_Controller.LoginScreenController lambda$getLoginAction$0
+INFO: User: test logged in.
