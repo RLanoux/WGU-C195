@@ -70,33 +70,19 @@ public class ReportController implements Initializable {
             try {
                 txtReportField.clear();
                 ObservableList<Appointment> apptTypes = DBAppointment.getApptsByMonth();
-                String apptType = "";
-                boolean isMatch = true;
                 Integer value = 1;
                 Map<String, Integer> map = new HashMap<>();
-                    for (Appointment a : apptTypes) {
+                for (Appointment a : apptTypes) {
+                    if (map.containsKey(a.getType())) {
+                        map.put(a.getType(), map.get(a.getType())+1);
+                    }
+                    else{
                         map.put(a.getType(), value);
-                        if (map.containsKey(a.getType())) {
-                            map.put(a.getType(), (map.get(a.getType())+1));
-                        }
-                        else {
-                            map.put(a.getType(), value);
-                        }
-                        for (String s : map.keySet()) {
-                            System.out.println("There are: " + map.get(s) + " " + s);
-                        }
-                       /* for (Appointment b : apptTypes) {
-                            if (b.getType().equals(a.getType())) {
-                                isMatch=true;
-                                count++;
-                                count2 = count;
-                                apptType = b.getType();
-                            }
-                        }
-                        if (isMatch) {
-                            System.out.println("There are: " + count2 + " " + apptType);
-                        }*/
-                    }   
+                    }
+                }
+                for (String s : map.keySet()) {
+                    txtReportField.appendText("There are: " + map.get(s) + " appointment type(s) of: " + s + " this month.\n");
+                }
             }
             catch (Exception e) {
                 e.printStackTrace();

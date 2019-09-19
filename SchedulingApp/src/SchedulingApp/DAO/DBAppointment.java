@@ -207,7 +207,9 @@ public class DBAppointment {
     public static ObservableList<Appointment> getOverlappingAppts(LocalDateTime start, LocalDateTime end) {
         ObservableList<Appointment> getOverlappedAppts = FXCollections.observableArrayList();
         String getOverlappingApptsSQL = "SELECT * FROM appointment " 
-                + "WHERE (start BETWEEN ? AND ? OR end BETWEEN ? AND ?)";
+                + "WHERE (start >= ? AND end <= ?) "
+                + "OR (start <= ? AND end >= ?) "
+                + "OR (start BETWEEN ? AND ? OR end BETWEEN ? AND ?)";
         
         try {
             LocalDateTime startLDT = start.atZone(zId).withZoneSameInstant(ZoneOffset.UTC).toLocalDateTime();
@@ -217,6 +219,10 @@ public class DBAppointment {
             stmt.setTimestamp(2, Timestamp.valueOf(endLDT));
             stmt.setTimestamp(3, Timestamp.valueOf(startLDT));
             stmt.setTimestamp(4, Timestamp.valueOf(endLDT));
+            stmt.setTimestamp(5, Timestamp.valueOf(startLDT));
+            stmt.setTimestamp(6, Timestamp.valueOf(endLDT));
+            stmt.setTimestamp(7, Timestamp.valueOf(startLDT));
+            stmt.setTimestamp(8, Timestamp.valueOf(endLDT));
             ResultSet rs = stmt.executeQuery();
             
                 while (rs.next()) {
